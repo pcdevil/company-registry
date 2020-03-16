@@ -1,0 +1,27 @@
+{
+  "name": "company-registry",
+  "version": "0.0.0",
+  "description": "A simple showcase application for a company registry API.",
+  "scripts": {},
+  "private": true,
+  "engines": {
+    "node": "13.11.0"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Attila Gonda",
+    "twitter": "pcdevil",
+    "url": "https://attilagonda.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pcdevil/company-registry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pcdevil/company-registry/issues"
+  },
+  "homepage": "https://github.com/pcdevil/company-registry#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}

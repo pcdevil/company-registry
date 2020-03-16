@@ -1,0 +1,25 @@
+{
+	"env": {
+		"es6": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"google"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2019
+	},
+	"rules": {
+		"indent": ["error", "tab"],
+		"max-len": ["error", 120],
+		"no-tabs": "off",
+		"object-curly-spacing": ["error", "always", {
+			"arraysInObjects": false,
+			"objectsInObjects": true
+		}],
+		"operator-linebreak": ["error", "before"],
+		"require-jsdoc": "off",
+		"space-before-function-paren": ["error", "always"]
+	}
+}

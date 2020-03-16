@@ -1,8 +1,10 @@
 'use strict';
 
+const dotenv = require('dotenv');
 const fastifyFactory = require('fastify');
 
-const fastify = fastifyFactory({ logger: true });
+const { parsed: parsedEnv } = dotenv.config();
+const fastify = fastifyFactory({ logger: parsedEnv.SERVER_LOGGER });
 
 fastify.get('/', async () => {
 	return { message: 'Hello, World' };
@@ -10,7 +12,7 @@ fastify.get('/', async () => {
 
 async function start () {
 	try {
-		await fastify.listen(3000);
+		await fastify.listen(parsedEnv.SERVER_PORT);
 	} catch (err) {
 		fastify.log.error(err);
 		process.exit(1);

@@ -39,6 +39,7 @@
     "sinon-chai": "^3.5.0"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "fastify": "^2.12.1"
   }
 }

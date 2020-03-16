@@ -2,7 +2,10 @@
   "name": "company-registry",
   "version": "0.0.0",
   "description": "A simple showcase application for a company registry API.",
-  "scripts": {},
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node $npm_package_main"
+  },
   "private": true,
   "engines": {
     "node": "13.11.0"

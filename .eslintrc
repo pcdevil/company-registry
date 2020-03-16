@@ -7,6 +7,14 @@
 		"eslint:recommended",
 		"google"
 	],
+	"overrides": [
+		{
+			"files": ["test/**/*.js"],
+			"env": {
+				"mocha": true
+			}
+		}
+	],
 	"parserOptions": {
 		"ecmaVersion": 2019
 	},

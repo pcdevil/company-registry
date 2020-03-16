@@ -4,8 +4,10 @@
   "description": "A simple showcase application for a company registry API.",
   "main": "src/index.js",
   "scripts": {
-    "lint": "eslint --fix 'src/**/*.js'",
-    "start": "node $npm_package_main"
+    "lint": "eslint --fix 'src/**/*.js' 'test/**/*.js'",
+    "start": "node $npm_package_main",
+    "test": "mocha 'test/setup.js' 'test/**/*.spec.js'",
+    "test:watch": "npm run test -- --watch --reporter min"
   },
   "private": true,
   "engines": {
@@ -27,8 +29,12 @@
   },
   "homepage": "https://github.com/pcdevil/company-registry#readme",
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^7.1.0",
+    "sinon": "^9.0.1",
+    "sinon-chai": "^3.5.0"
   },
   "dependencies": {}
 }

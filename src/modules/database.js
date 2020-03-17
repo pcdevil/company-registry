@@ -14,12 +14,12 @@ class Database {
 		return new this(mongoose, config);
 	}
 
-	connect () {
-		this._mongooseModule.connect(this._getMongooseUri(), this._getMongooseOptions());
+	async connect () {
+		await this._mongooseModule.connect(this._getMongooseUri(), this._getMongooseOptions());
 	}
 
-	disconnect () {
-		this._mongooseModule.disconnect();
+	async disconnect () {
+		await this._mongooseModule.disconnect();
 	}
 
 	_getMongooseUri () {

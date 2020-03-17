@@ -3,17 +3,9 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { Server } = require('../../src/modules');
+const { createAsyncStubCallFake } = require('../create-async-stub-call-fake');
 
 describe('Server', () => {
-	function createAsyncStubCallFake (stubCallback) {
-		return async () => new Promise((resolve) => {
-			setTimeout(() => {
-				stubCallback();
-				resolve();
-			}, 1);
-		});
-	}
-
 	let config;
 	let database;
 	let fastifyModule;

@@ -4,4 +4,4 @@ const { Server } = require('./modules');
 
 const server = Server.createDefault();
 server.init();
-server.run();
+server.start();

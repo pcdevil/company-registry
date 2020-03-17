@@ -56,7 +56,7 @@ describe('Server', () => {
 		});
 	});
 
-	describe('run()', () => {
+	describe('start()', () => {
 		beforeEach(() => {
 			subject.init();
 		});
@@ -64,11 +64,11 @@ describe('Server', () => {
 		it('should be an async function', () => {
 			const AsyncFunction = (async () => {}).constructor;
 
-			expect(subject.run).to.be.an.instanceof(AsyncFunction);
+			expect(subject.start).to.be.an.instanceof(AsyncFunction);
 		});
 
 		it('should connect to database via the given module', async () => {
-			await subject.run();
+			await subject.start();
 
 			expect(database.connect).to.have.been.called;
 		});
@@ -78,7 +78,7 @@ describe('Server', () => {
 			const afterStub = sinon.stub();
 
 			database.connect.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.run();
+			await subject.start();
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
@@ -88,14 +88,14 @@ describe('Server', () => {
 			const thrownError = new Error();
 			database.connect.throws(thrownError);
 
-			await subject.run();
+			await subject.start();
 
 			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
 			expect(processModule.exit).to.have.been.calledWith(1);
 		});
 
 		it('should listen for the fastify instance with the given port', async () => {
-			await subject.run();
+			await subject.start();
 
 			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port, config.server.host);
 		});
@@ -105,7 +105,7 @@ describe('Server', () => {
 			const afterStub = sinon.stub();
 
 			fastifyInstance.listen.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.run();
+			await subject.start();
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
@@ -115,7 +115,7 @@ describe('Server', () => {
 			const thrownError = new Error();
 			fastifyInstance.listen.throws(thrownError);
 
-			await subject.run();
+			await subject.start();
 
 			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
 			expect(processModule.exit).to.have.been.calledWith(1);

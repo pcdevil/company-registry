@@ -18,6 +18,7 @@ class Config {
 
 	get server () {
 		return {
+			host: nullishOperator(this._parsedConfig.SERVER_HOST, 'localhost'),
 			port: nullishOperator(this._parsedConfig.SERVER_PORT, 8080),
 			logger: nullishOperator(this._parsedConfig.SERVER_LOGGER, true),
 		};

@@ -31,7 +31,7 @@ class Server {
 
 	run () {
 		try {
-			this._fastifyInstance.listen(this._config.server.port);
+			this._fastifyInstance.listen(this._config.server.port, this._config.server.host);
 		} catch (err) {
 			this._fastifyInstance.log.error(err);
 			this._processModule.exit(1);

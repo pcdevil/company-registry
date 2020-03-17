@@ -6,8 +6,9 @@ const { Config } = require('../src/config');
 
 describe('Config', () => {
 	const envStub = {
-		SERVER_LOGGER: false,
+		SERVER_HOST: 'company-registry',
 		SERVER_PORT: 1234,
+		SERVER_LOGGER: false,
 	};
 	let emptyDotenv;
 	let errorDotenv;
@@ -24,6 +25,18 @@ describe('Config', () => {
 			const subject = new Config(errorDotenv);
 
 			expect(subject.server).to.be.an('object');
+		});
+
+		it('should have a "host" property populated by the "SERVER_HOST" env variable', () => {
+			const subject = new Config(populatedDotenv);
+
+			expect(subject.server.host).to.be.eql(envStub.SERVER_HOST);
+		});
+
+		it('should have a "host" property with default value if the "SERVER_HOST" env variable is unset', () => {
+			const subject = new Config(emptyDotenv);
+
+			expect(subject.server.host).to.be.eql('localhost');
 		});
 
 		it('should have a "port" property populated by the "SERVER_PORT" env variable', () => {

@@ -6,6 +6,7 @@ const { Server } = require('../../src/modules');
 
 describe('Server', () => {
 	let config;
+	let database;
 	let fastifyModule;
 	let fastifyInstance;
 	let route;
@@ -23,10 +24,11 @@ describe('Server', () => {
 		processModule = { exit: sinon.stub() };
 		fastifyModule = sinon.stub().returns(fastifyInstance);
 		config = { server: { host: 'company-registry', port: 1234, logger: true } };
+		database = { connect: sinon.stub(), disconnect: sinon.stub() };
 		routeOptions = { method: 'PUT', url: '/test-route', handler: async () => ({ test: true }) };
 		route = { getOptions: sinon.stub().returns(routeOptions) };
 		routes = [route];
-		subject = new Server(processModule, fastifyModule, config, routes);
+		subject = new Server(processModule, fastifyModule, config, database, routes);
 	});
 
 	describe('init()', () => {
@@ -48,6 +50,22 @@ describe('Server', () => {
 	describe('run()', () => {
 		beforeEach(() => {
 			subject.init();
+		});
+
+		it('should connect to database via the given module', async () => {
+			await subject.run();
+
+			expect(database.connect).to.have.been.called;
+		});
+
+		it('should handle errors from the database', async () => {
+			const thrownError = new Error();
+			database.connect.throws(thrownError);
+
+			await subject.run();
+
+			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
+			expect(processModule.exit).to.have.been.calledWith(1);
 		});
 
 		it('should listen for the fastify instance with the given port', async () => {

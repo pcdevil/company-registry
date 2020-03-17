@@ -16,6 +16,14 @@ class Config {
 		return new this(dotenv);
 	}
 
+	get mongodb () {
+		return {
+			host: nullishOperator(this._parsedConfig.MONGODB_HOST, 'mongodb'),
+			port: nullishOperator(this._parsedConfig.MONGODB_PORT, 27017),
+			database: nullishOperator(this._parsedConfig.MONGODB_DATABASE, 'company-registry'),
+		};
+	}
+
 	get server () {
 		return {
 			host: nullishOperator(this._parsedConfig.SERVER_HOST, 'localhost'),

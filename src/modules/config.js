@@ -1,7 +1,7 @@
 'use strict';
 
 const dotenv = require('dotenv');
-const { nullishOperator } = require('./lib');
+const { nullishOperator } = require('../lib');
 
 class Config {
 	constructor (dotenvModule) {

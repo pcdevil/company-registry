@@ -2,7 +2,7 @@
 
 const { expect } = require('chai');
 const sinon = require('sinon');
-const { Server } = require('../src/server');
+const { Server } = require('../../src/modules');
 
 describe('Server', () => {
 	let config;

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Server } = require('./server');
+const { Server } = require('./modules');
 
 const server = Server.createDefault();
 server.init();

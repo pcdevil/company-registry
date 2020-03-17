@@ -2,7 +2,7 @@
 
 const fastify = require('fastify');
 const { Config } = require('./config');
-const { RootGetRoute } = require('./routes');
+const { RootGetRoute } = require('../routes');
 
 class Server {
 	constructor (processModule, fastifyModule, config, routes) {

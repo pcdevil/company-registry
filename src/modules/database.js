@@ -15,7 +15,7 @@ class Database {
 	}
 
 	connect () {
-		this._mongooseModule.connect(this._getMongooseUri());
+		this._mongooseModule.connect(this._getMongooseUri(), this._getMongooseOptions());
 	}
 
 	disconnect () {
@@ -24,6 +24,13 @@ class Database {
 
 	_getMongooseUri () {
 		return `mongodb://${this._config.mongodb.host}:${this._config.mongodb.port}/${this._config.mongodb.database}`;
+	}
+
+	_getMongooseOptions () {
+		return {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		};
 	}
 }
 

@@ -23,7 +23,10 @@ describe('Database', () => {
 
 		subject.connect();
 
-		expect(mongooseModule.connect).to.have.been.calledWith(mongoUri);
+		expect(mongooseModule.connect).to.have.been.calledWith(mongoUri, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+		});
 	});
 
 	it('should call the mongoose disconnect when the disconnect method is called', () => {

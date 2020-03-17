@@ -93,6 +93,7 @@ describe('Server', () => {
 			await subject.start();
 
 			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
+			expect(database.disconnect).to.have.been.called;
 			expect(processModule.exit).to.have.been.calledWith(1);
 		});
 
@@ -120,6 +121,7 @@ describe('Server', () => {
 			await subject.start();
 
 			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
+			expect(fastifyInstance.close).to.have.been.called;
 			expect(processModule.exit).to.have.been.calledWith(1);
 		});
 	});

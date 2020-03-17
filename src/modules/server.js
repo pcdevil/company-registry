@@ -37,21 +37,27 @@ class Server {
 			await this._database.connect();
 			await this._fastifyInstance.listen(this._config.server.port, this._config.server.host);
 		} catch (err) {
-			this._fastifyInstance.log.error(err);
-			this._processModule.exit(1);
+			await this._stop(1, err);
 		}
 	}
 
 	async stop () {
-		await this._database.disconnect();
-		await this._fastifyInstance.close();
-		this._processModule.exit(0);
+		await this._stop(0);
 	}
 
 	_initRoutes () {
 		for (const route of this._routes) {
 			this._fastifyInstance.route(route.getOptions());
 		}
+	}
+
+	async _stop (exitCode, err) {
+		if (err) {
+			this._fastifyInstance.log.error(err);
+		}
+		await this._database.disconnect();
+		await this._fastifyInstance.close();
+		this._processModule.exit(exitCode);
 	}
 }
 

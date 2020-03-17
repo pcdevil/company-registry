@@ -30,6 +30,7 @@ class Database {
 		return {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
+			serverSelectionTimeoutMS: 5000,
 		};
 	}
 }

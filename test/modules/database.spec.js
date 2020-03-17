@@ -34,6 +34,7 @@ describe('Database', () => {
 			expect(mongooseModule.connect).to.have.been.calledWith(mongoUri, {
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
+				serverSelectionTimeoutMS: 5000,
 			});
 		});
 

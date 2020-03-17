@@ -53,10 +53,6 @@ class Server {
 			this._fastifyInstance.route(route.getOptions());
 		}
 	}
-
-	async rootRouteHandler () {
-		return { message: 'Hello, World' };
-	}
 }
 
 module.exports = { Server };

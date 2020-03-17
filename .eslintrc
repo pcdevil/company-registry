@@ -20,7 +20,7 @@
 	},
 	"rules": {
 		"indent": ["error", "tab"],
-		"max-len": ["error", 120],
+		"max-len": ["error", 160],
 		"no-tabs": "off",
 		"object-curly-spacing": ["error", "always", {
 			"arraysInObjects": false,

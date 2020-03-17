@@ -26,9 +26,10 @@ describe('Server', () => {
 
 	beforeEach(() => {
 		fastifyInstance = {
-			route: sinon.stub(),
+			close: sinon.stub(),
 			listen: sinon.stub(),
 			log: { error: sinon.stub() },
+			route: sinon.stub(),
 		};
 		processModule = { exit: sinon.stub() };
 		fastifyModule = sinon.stub().returns(fastifyInstance);
@@ -57,8 +58,9 @@ describe('Server', () => {
 	});
 
 	describe('start()', () => {
-		beforeEach(() => {
+		beforeEach(async () => {
 			subject.init();
+			await subject.start();
 		});
 
 		it('should be an async function', () => {
@@ -119,6 +121,58 @@ describe('Server', () => {
 
 			expect(fastifyInstance.log.error).to.have.been.calledWith(thrownError);
 			expect(processModule.exit).to.have.been.calledWith(1);
+		});
+	});
+
+	describe('stop()', () => {
+		beforeEach(() => {
+			subject.init();
+		});
+
+		it('should be an async function', () => {
+			const AsyncFunction = (async () => {}).constructor;
+
+			expect(subject.stop).to.be.an.instanceof(AsyncFunction);
+		});
+
+		it('should disconnect from the database via the given module', async () => {
+			await subject.stop();
+
+			expect(database.disconnect).to.have.been.called;
+		});
+
+		it('should wait for the database connection to be down', async () => {
+			const beforeStub = sinon.stub();
+			const afterStub = sinon.stub();
+
+			database.disconnect.callsFake(createAsyncStubCallFake(beforeStub));
+			await subject.stop();
+			afterStub();
+
+			expect(afterStub).to.have.been.calledAfter(beforeStub);
+		});
+
+		it('should clost the fastify instance', async () => {
+			await subject.stop();
+
+			expect(fastifyInstance.close).to.have.been.called;
+		});
+
+		it('should wait for the fastify server to be down', async () => {
+			const beforeStub = sinon.stub();
+			const afterStub = sinon.stub();
+
+			fastifyInstance.close.callsFake(createAsyncStubCallFake(beforeStub));
+			await subject.stop();
+			afterStub();
+
+			expect(afterStub).to.have.been.calledAfter(beforeStub);
+		});
+
+		it('should exit from the application', async () => {
+			await subject.stop();
+
+			expect(processModule.exit).to.have.been.calledWith(0);
 		});
 	});
 });

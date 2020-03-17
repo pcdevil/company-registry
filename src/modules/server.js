@@ -42,6 +42,12 @@ class Server {
 		}
 	}
 
+	async stop () {
+		await this._database.disconnect();
+		await this._fastifyInstance.close();
+		this._processModule.exit(0);
+	}
+
 	_initRoutes () {
 		for (const route of this._routes) {
 			this._fastifyInstance.route(route.getOptions());

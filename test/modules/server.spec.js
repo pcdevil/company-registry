@@ -5,6 +5,15 @@ const sinon = require('sinon');
 const { Server } = require('../../src/modules');
 
 describe('Server', () => {
+	function createAsyncStubCallFake (stubCallback) {
+		return async () => new Promise((resolve) => {
+			setTimeout(() => {
+				stubCallback();
+				resolve();
+			}, 1);
+		});
+	}
+
 	let config;
 	let database;
 	let fastifyModule;
@@ -52,10 +61,27 @@ describe('Server', () => {
 			subject.init();
 		});
 
+		it('should be an async function', () => {
+			const AsyncFunction = (async () => {}).constructor;
+
+			expect(subject.run).to.be.an.instanceof(AsyncFunction);
+		});
+
 		it('should connect to database via the given module', async () => {
 			await subject.run();
 
 			expect(database.connect).to.have.been.called;
+		});
+
+		it('should wait for the database connection to be up', async () => {
+			const beforeStub = sinon.stub();
+			const afterStub = sinon.stub();
+
+			database.connect.callsFake(createAsyncStubCallFake(beforeStub));
+			await subject.run();
+			afterStub();
+
+			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should handle errors from the database', async () => {
@@ -72,6 +98,17 @@ describe('Server', () => {
 			await subject.run();
 
 			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port, config.server.host);
+		});
+
+		it('should wait for the fastify server to be up', async () => {
+			const beforeStub = sinon.stub();
+			const afterStub = sinon.stub();
+
+			fastifyInstance.listen.callsFake(createAsyncStubCallFake(beforeStub));
+			await subject.run();
+			afterStub();
+
+			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should handle errors from the fastify instance', async () => {

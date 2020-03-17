@@ -32,10 +32,10 @@ class Server {
 		this._initRoutes();
 	}
 
-	run () {
+	async run () {
 		try {
-			this._database.connect();
-			this._fastifyInstance.listen(this._config.server.port, this._config.server.host);
+			await this._database.connect();
+			await this._fastifyInstance.listen(this._config.server.port, this._config.server.host);
 		} catch (err) {
 			this._fastifyInstance.log.error(err);
 			this._processModule.exit(1);

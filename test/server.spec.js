@@ -8,19 +8,25 @@ describe('Server', () => {
 	let config;
 	let fastifyModule;
 	let fastifyInstance;
+	let route;
+	let routeOptions;
 	let processModule;
+	let routes;
 	let subject;
 
 	beforeEach(() => {
 		fastifyInstance = {
-			get: sinon.stub(),
+			route: sinon.stub(),
 			listen: sinon.stub(),
 			log: { error: sinon.stub() },
 		};
 		processModule = { exit: sinon.stub() };
 		fastifyModule = sinon.stub().returns(fastifyInstance);
 		config = { server: { port: 1234, logger: true } };
-		subject = new Server(processModule, fastifyModule, config);
+		routeOptions = { method: 'PUT', url: '/test-route', handler: async () => ({ test: true }) };
+		route = { getOptions: sinon.stub().returns(routeOptions) };
+		routes = [route];
+		subject = new Server(processModule, fastifyModule, config, routes);
 	});
 
 	describe('init()', () => {
@@ -30,11 +36,12 @@ describe('Server', () => {
 			expect(fastifyModule).to.have.been.calledWith({ logger: config.server.logger });
 		});
 
-		it('should set a route for "/" on the fastify instance', () => {
+		it('should set the given route on the fastify instance', () => {
 			subject.init();
 
-			expect(fastifyInstance.get).to.have.been.calledWith('/');
-			expect(fastifyInstance.get.firstCall.lastArg).to.be.a('function');
+			expect(route.getOptions).to.have.been.called;
+
+			expect(fastifyInstance.route).to.have.been.calledWith(routeOptions);
 		});
 	});
 

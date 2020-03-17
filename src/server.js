@@ -2,17 +2,22 @@
 
 const fastify = require('fastify');
 const { Config } = require('./config');
+const { RootGetRoute } = require('./routes');
 
 class Server {
-	constructor (processModule, fastifyModule, config) {
+	constructor (processModule, fastifyModule, config, routes) {
 		this._processModule = processModule;
 		this._fastifyModule = fastifyModule;
 		this._config = config;
+		this._routes = routes;
 	}
 
 	static createDefault () {
 		const config = Config.createDefault();
-		return new this(process, fastify, config);
+		const routes = [
+			RootGetRoute,
+		];
+		return new this(process, fastify, config, routes);
 	}
 
 	init () {
@@ -34,7 +39,9 @@ class Server {
 	}
 
 	_initRoutes () {
-		this._fastifyInstance.get('/', this.rootRouteHandler);
+		for (const route of this._routes) {
+			this._fastifyInstance.route(route.getOptions());
+		}
 	}
 
 	async rootRouteHandler () {

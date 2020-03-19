@@ -7,26 +7,30 @@ const { AsyncFunction } = require('../async-function');
 const { createAsyncStubCallFake } = require('../create-async-stub-call-fake');
 
 describe('CategoriesDao', () => {
-	const id = '5e7361b98e811a14b36377c3';
+	const id1 = '5e735ae25d27a6d4b2c6cd51id';
+	const id2 = '5e7361b98e8f111a14b36377c3';
 	const name1 = 'Test 1 2 3';
+	const name1Updated = 'Test 1 2 3!';
 	const name2 = 'Test 4 5 6';
 	let Model;
 	let mongooseModule;
 	let document1;
+	let document1Updated;
 	let document2;
 	let documentList;
 	let schema;
 	let subject;
 
 	beforeEach(() => {
-		document1 = { _id: id, name: name1, save: sinon.stub() };
-		document2 = { _id: id, name: name2, save: sinon.stub() };
+		document1 = { _id: id1, name: name1, save: sinon.stub() };
+		document1Updated = { _id: id1, name: name1Updated, save: sinon.stub() };
+		document2 = { _id: id2, name: name2, save: sinon.stub() };
 		documentList = [document1, document2];
 		Model = sinon.stub().returns(document1);
 		Model.find = sinon.stub().returns(documentList);
 		Model.findById = sinon.stub().returns(document1);
 		Model.findByIdAndDelete = sinon.stub().returns(document1);
-		Model.findByIdAndUpdate = sinon.stub().returns(document2);
+		Model.findByIdAndUpdate = sinon.stub().returns(document1Updated);
 		schema = { obj: { name: { type: String, required: true, unique: true } } };
 		mongooseModule = {
 			Schema: sinon.stub().returns(schema),
@@ -144,9 +148,9 @@ describe('CategoriesDao', () => {
 		});
 
 		it('should search for the model properly', async () => {
-			await subject.read(id);
+			await subject.read(id1);
 
-			expect(Model.findById).to.have.been.calledWith(id);
+			expect(Model.findById).to.have.been.calledWith(id1);
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -154,14 +158,14 @@ describe('CategoriesDao', () => {
 			const afterStub = sinon.stub();
 
 			Model.findById.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.read(id);
+			await subject.read(id1);
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should return the existing document', async () => {
-			const actual = await subject.read(id);
+			const actual = await subject.read(id1);
 
 			expect(actual).to.be.equal(document1);
 		});
@@ -173,9 +177,9 @@ describe('CategoriesDao', () => {
 		});
 
 		it('should search for the model properly', async () => {
-			await subject.update(id, name2);
+			await subject.update(id1, name1Updated);
 
-			expect(Model.findByIdAndUpdate).to.have.been.calledWith(id, { name: name2 }, { new: true });
+			expect(Model.findByIdAndUpdate).to.have.been.calledWith(id1, { name: name1Updated }, { new: true });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -183,16 +187,16 @@ describe('CategoriesDao', () => {
 			const afterStub = sinon.stub();
 
 			Model.findByIdAndUpdate.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.update(id, name2);
+			await subject.update(id1, name1Updated);
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should return the updated document', async () => {
-			const actual = await subject.update(id, name2);
+			const actual = await subject.update(id1, name1Updated);
 
-			expect(actual).to.be.equal(document2);
+			expect(actual).to.be.equal(document1Updated);
 		});
 	});
 
@@ -202,9 +206,9 @@ describe('CategoriesDao', () => {
 		});
 
 		it('should delete from the model properly', async () => {
-			await subject.delete(id);
+			await subject.delete(id1);
 
-			expect(Model.findByIdAndDelete).to.have.been.calledWith(id);
+			expect(Model.findByIdAndDelete).to.have.been.calledWith(id1);
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -212,14 +216,14 @@ describe('CategoriesDao', () => {
 			const afterStub = sinon.stub();
 
 			Model.findByIdAndDelete.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.delete(id);
+			await subject.delete(id1);
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should return the deleted document', async () => {
-			const actual = await subject.delete(id);
+			const actual = await subject.delete(id1);
 
 			expect(actual).to.be.equal(document1);
 		});

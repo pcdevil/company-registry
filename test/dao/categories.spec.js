@@ -22,9 +22,9 @@ describe('CategoriesDao', () => {
 	let subject;
 
 	beforeEach(() => {
-		document1 = { _id: id1, name: name1, save: sinon.stub() };
-		document1Updated = { _id: id1, name: name1Updated, save: sinon.stub() };
-		document2 = { _id: id2, name: name2, save: sinon.stub() };
+		document1 = { _id: { toString: () => id1 }, name: name1, save: sinon.stub() };
+		document1Updated = { _id: { toString: () => id1 }, name: name1Updated, save: sinon.stub() };
+		document2 = { _id: { toString: () => id2 }, name: name2, save: sinon.stub() };
 		documentList = [document1, document2];
 		Model = sinon.stub().returns(document1);
 		Model.find = sinon.stub().returns(documentList);
@@ -226,6 +226,15 @@ describe('CategoriesDao', () => {
 			const actual = await subject.delete(id1);
 
 			expect(actual).to.be.equal(document1);
+		});
+	});
+
+	describe('documentToObject()', () => {
+		it('should strip any mongoose internal and return back the primitive object', () => {
+			const actual = subject.documentToObject(document1);
+
+			expect(actual.constructor.name).to.be.eql('Object');
+			expect(actual).to.be.eql({ id: id1, name: name1 });
 		});
 	});
 });

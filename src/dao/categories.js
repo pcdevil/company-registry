@@ -60,6 +60,12 @@ class CategoriesDao {
 		return document;
 	}
 
+	documentToObject (document) {
+		const { _id, name } = document;
+		const id = _id.toString();
+		return { id, name };
+	}
+
 	_createModel () {
 		const schema = this.getSchema();
 		this._model = this._mongooseModule.model(this.constructor.getModelName(), schema);

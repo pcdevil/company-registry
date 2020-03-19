@@ -18,7 +18,7 @@ class Server {
 		const config = Config.createDefault();
 		const database = Database.createDefault();
 		const routes = [
-			RootGetRoute,
+			RootGetRoute.createDefault(),
 		];
 		return new this(process, fastify, config, database, routes);
 	}

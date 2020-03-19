@@ -3,24 +3,24 @@
 const { NotImplementedError } = require('../lib');
 
 class AbstractRoute {
-	static getMethod () {
-		throw new NotImplementedError('getMethod');
+	constructor (method, url) {
+		this._method = method;
+		this._url = url;
 	}
 
-	static getUrl () {
-		throw new NotImplementedError('getUrl');
+	static createDefault () {
+		return new this();
 	}
 
-	static getHandler () {
-		throw new NotImplementedError('getHandler');
-	}
-
-	static getOptions () {
-		const method = this.getMethod();
-		const url = this.getUrl();
-		const handler = this.getHandler();
-
+	getOptions () {
+		const method = this._method;
+		const url = this._url;
+		const handler = this._getHandler();
 		return { method, url, handler };
+	}
+
+	_getHandler () {
+		throw new NotImplementedError('getHandler');
 	}
 }
 

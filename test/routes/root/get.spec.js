@@ -6,34 +6,38 @@ const { RootGetRoute } = require('../../../src/routes');
 const { AsyncFunction } = require('../../async-function');
 
 describe('RootGetRoute', () => {
+	let subject;
+
+	beforeEach(() => {
+		subject = new RootGetRoute();
+	});
+
 	it('should be an extension of the abstract class', () => {
-		expect(RootGetRoute.prototype).to.be.an.instanceof(AbstractRoute);
+		expect(subject).to.be.an.instanceof(AbstractRoute);
 	});
 
-	it('should return "GET" when the getMethod method is called', () => {
-		const actual = RootGetRoute.getMethod();
+	describe('getOptions()', () => {
+		it('should return the properties as an object', () => {
+			const actual = subject.getOptions();
 
-		expect(actual).to.be.eql('GET');
-	});
+			expect(actual.method).to.be.eql('GET');
+			expect(actual.url).to.be.eql('/');
+			expect(actual.handler).to.be.a('function');
+		});
 
-	it('should return "/" when the getUrl method is called', () => {
-		const actual = RootGetRoute.getUrl();
+		it('should return an async function as the handler', () => {
+			const { handler } = subject.getOptions();
 
-		expect(actual).to.be.eql('/');
-	});
+			expect(handler).to.be.an.instanceof(AsyncFunction);
+		});
 
-	it('should return an async function when the getHandler method is called', () => {
-		const actual = RootGetRoute.getHandler();
+		it('should return an object when the handler function is called', async () => {
+			const { handler } = subject.getOptions();
 
-		expect(actual).to.be.an.instanceof(AsyncFunction);
-	});
+			const actual = await handler();
 
-	it('should return an object when the handler function is called', async () => {
-		const handler = RootGetRoute.getHandler();
-
-		const actual = await handler();
-
-		expect(actual).to.be.an('object');
-		expect(actual.message).to.be.eql('Hello, World');
+			expect(actual).to.be.an('object');
+			expect(actual.message).to.be.eql('Hello, World');
+		});
 	});
 });

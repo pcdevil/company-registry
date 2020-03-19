@@ -3,15 +3,11 @@
 const { AbstractRoute } = require('../abstract');
 
 class RootGetRoute extends AbstractRoute {
-	static getMethod () {
-		return 'GET';
+	constructor () {
+		super('GET', '/');
 	}
 
-	static getUrl () {
-		return '/';
-	}
-
-	static getHandler () {
+	_getHandler () {
 		return async () => ({ message: 'Hello, World' });
 	}
 }

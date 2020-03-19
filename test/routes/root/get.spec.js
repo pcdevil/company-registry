@@ -3,6 +3,7 @@
 const { expect } = require('chai');
 const { AbstractRoute } = require('../../../src/routes/abstract');
 const { RootGetRoute } = require('../../../src/routes');
+const { AsyncFunction } = require('../../async-function');
 
 describe('RootGetRoute', () => {
 	it('should be an extension of the abstract class', () => {
@@ -22,8 +23,6 @@ describe('RootGetRoute', () => {
 	});
 
 	it('should return an async function when the getHandler method is called', () => {
-		const AsyncFunction = (async () => {}).constructor;
-
 		const actual = RootGetRoute.getHandler();
 
 		expect(actual).to.be.an.instanceof(AsyncFunction);

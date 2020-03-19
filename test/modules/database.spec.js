@@ -3,6 +3,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { Database } = require('../../src/modules');
+const { AsyncFunction } = require('../async-function');
 const { createAsyncStubCallFake } = require('../create-async-stub-call-fake');
 
 describe('Database', () => {
@@ -21,8 +22,6 @@ describe('Database', () => {
 
 	describe('connect()', () => {
 		it('should be an async function', () => {
-			const AsyncFunction = (async () => {}).constructor;
-
 			expect(subject.connect).to.be.an.instanceof(AsyncFunction);
 		});
 
@@ -52,8 +51,6 @@ describe('Database', () => {
 
 	describe('disconnect()', () => {
 		it('should be an async function', () => {
-			const AsyncFunction = (async () => {}).constructor;
-
 			expect(subject.disconnect).to.be.an.instanceof(AsyncFunction);
 		});
 

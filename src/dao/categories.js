@@ -29,6 +29,12 @@ class CategoriesDao {
 		return this._schema;
 	}
 
+	async list () {
+		const Model = this.getModel();
+		const documentList = await Model.find({});
+		return documentList;
+	}
+
 	async create (name) {
 		const Model = this.getModel();
 		const document = new Model({ name });

@@ -14,13 +14,16 @@ describe('CategoriesDao', () => {
 	let mongooseModule;
 	let document1;
 	let document2;
+	let documentList;
 	let schema;
 	let subject;
 
 	beforeEach(() => {
 		document1 = { _id: id, name: name1, save: sinon.stub() };
 		document2 = { _id: id, name: name2, save: sinon.stub() };
+		documentList = [document1, document2];
 		Model = sinon.stub().returns(document1);
+		Model.find = sinon.stub().returns(documentList);
 		Model.findById = sinon.stub().returns(document1);
 		Model.findByIdAndDelete = sinon.stub().returns(document1);
 		Model.findByIdAndUpdate = sinon.stub().returns(document2);
@@ -72,6 +75,35 @@ describe('CategoriesDao', () => {
 
 			expect(mongooseModule.Schema).to.not.have.been.called;
 			expect(actual).to.be.equal(schema);
+		});
+	});
+
+	describe('list()', () => {
+		it('should be an async function', () => {
+			expect(subject.list).to.be.an.instanceof(AsyncFunction);
+		});
+
+		it('should search for the model properly', async () => {
+			await subject.list();
+
+			expect(Model.find).to.have.been.calledWith({});
+		});
+
+		it('should wait for the document to resolve', async () => {
+			const beforeStub = sinon.stub();
+			const afterStub = sinon.stub();
+
+			Model.find.callsFake(createAsyncStubCallFake(beforeStub));
+			await subject.list();
+			afterStub();
+
+			expect(afterStub).to.have.been.calledAfter(beforeStub);
+		});
+
+		it('should return the list of the existing documents', async () => {
+			const actual = await subject.list();
+
+			expect(actual).to.be.equal(documentList);
 		});
 	});
 

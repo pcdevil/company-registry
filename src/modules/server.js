@@ -3,7 +3,12 @@
 const fastify = require('fastify');
 const { Config } = require('./config');
 const { Database } = require('./database');
-const { CategoriesGetRoute, CategoriesPutRoute, RootGetRoute } = require('../routes');
+const {
+	CategoriesGetRoute,
+	CategoriesPutRoute,
+	CategoriesIdGetRoute,
+	RootGetRoute,
+} = require('../routes');
 
 class Server {
 	constructor (processModule, fastifyModule, config, database, routes) {
@@ -21,6 +26,7 @@ class Server {
 			RootGetRoute.createDefault(),
 			CategoriesGetRoute.createDefault(),
 			CategoriesPutRoute.createDefault(),
+			CategoriesIdGetRoute.createDefault(),
 		];
 		return new this(process, fastify, config, database, routes);
 	}

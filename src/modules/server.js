@@ -6,6 +6,7 @@ const { Database } = require('./database');
 const {
 	CategoriesGetRoute,
 	CategoriesPutRoute,
+	CategoriesIdDeleteRoute,
 	CategoriesIdGetRoute,
 	CategoriesIdPatchRoute,
 	RootGetRoute,
@@ -25,6 +26,7 @@ class Server {
 		const database = Database.createDefault();
 		const routes = [
 			RootGetRoute.createDefault(),
+			CategoriesIdDeleteRoute.createDefault(),
 			CategoriesGetRoute.createDefault(),
 			CategoriesPutRoute.createDefault(),
 			CategoriesIdGetRoute.createDefault(),

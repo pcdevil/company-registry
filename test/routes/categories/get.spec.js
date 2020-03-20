@@ -62,39 +62,42 @@ describe('CategoriesGetRoute', () => {
 			expect(handler).to.be.an.instanceof(AsyncFunction);
 		});
 
-		it('should return a well-formed response when the handler function is called', async () => {
-			const { handler } = subject.getOptions();
+		describe('handler()', () => {
+			it('should return a well-formed response', async () => {
+				const { handler } = subject.getOptions();
 
-			const actual = await handler(request, reply);
+				const actual = await handler(request, reply);
 
-			expect(actual).to.be.an('object');
-			expect(actual.data).to.be.an('array');
-			expect(actual.success).to.be.true;
-		});
+				expect(actual).to.be.an('object');
+				expect(actual.data).to.be.an('array');
+				expect(actual.success).to.be.true;
+			});
 
-		it('should return the a primitive document list when the handler function is called', async () => {
-			const { handler } = subject.getOptions();
+			it('should return the documents from the dao as simple objects', async () => {
+				const { handler } = subject.getOptions();
 
-			const actual = await handler(request, reply);
+				const actual = await handler(request, reply);
 
-			expect(actual).to.be.an('object');
-			expect(actual.data).to.be.eql(documentObjectList);
-		});
+				expect(categoriesDao.list).to.have.been.called;
+				expect(actual).to.be.an('object');
+				expect(actual.data).to.be.eql(documentObjectList);
+			});
 
-		it('should return a well-formed response when the dao throws an error', async () => {
-			categoriesDao.list.rejects(new Error());
-			const { handler } = subject.getOptions();
+			it('should return a well-formed response when the dao throws an error', async () => {
+				categoriesDao.list.rejects(new Error());
+				const { handler } = subject.getOptions();
 
-			const actual = await handler(request, reply);
+				const actual = await handler(request, reply);
 
-			expect(reply.code).to.have.been.calledWith(500);
+				expect(reply.code).to.have.been.calledWith(500);
 
-			expect(actual).to.be.an('object');
-			expect(actual.data).to.be.an('array');
-			expect(actual.data).to.be.empty;
-			expect(actual.error).to.be.an('object');
-			expect(actual.error.code).to.be.eql(500);
-			expect(actual.success).to.be.false;
+				expect(actual).to.be.an('object');
+				expect(actual.data).to.be.an('array');
+				expect(actual.data).to.be.empty;
+				expect(actual.error).to.be.an('object');
+				expect(actual.error.code).to.be.eql(500);
+				expect(actual.success).to.be.false;
+			});
 		});
 	});
 });

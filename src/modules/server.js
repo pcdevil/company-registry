@@ -7,6 +7,7 @@ const {
 	CategoriesGetRoute,
 	CategoriesPutRoute,
 	CategoriesIdGetRoute,
+	CategoriesIdPatchRoute,
 	RootGetRoute,
 } = require('../routes');
 
@@ -27,6 +28,7 @@ class Server {
 			CategoriesGetRoute.createDefault(),
 			CategoriesPutRoute.createDefault(),
 			CategoriesIdGetRoute.createDefault(),
+			CategoriesIdPatchRoute.createDefault(),
 		];
 		return new this(process, fastify, config, database, routes);
 	}

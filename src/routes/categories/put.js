@@ -3,9 +3,20 @@
 const { AbstractRoute } = require('../abstract');
 const { CategoriesDao } = require('../../dao');
 
-class CategoriesGetRoute extends AbstractRoute {
+class CategoriesPutRoute extends AbstractRoute {
 	constructor (categoriesDao) {
-		super('GET', '/categories');
+		const method = 'PUT';
+		const url = '/categories';
+		const schema = {
+			body: {
+				type: 'object',
+				properties: {
+					name: { type: 'string' },
+				},
+				required: ['name'],
+			},
+		};
+		super(method, url, schema);
 		this._categoriesDao = categoriesDao;
 	}
 
@@ -17,9 +28,11 @@ class CategoriesGetRoute extends AbstractRoute {
 	_getHandler () {
 		return async (request, reply) => {
 			try {
-				const documentList = await this._categoriesDao.list();
-				const data = documentList
+				const { name } = request.body;
+				const document = await this._categoriesDao.create(name);
+				const data = [document]
 					.map((document) => this._categoriesDao.documentToObject(document));
+
 				return this._successResponse(data);
 			} catch (e) {
 				reply.code(500);
@@ -29,4 +42,4 @@ class CategoriesGetRoute extends AbstractRoute {
 	}
 }
 
-module.exports = { CategoriesGetRoute };
+module.exports = { CategoriesPutRoute };

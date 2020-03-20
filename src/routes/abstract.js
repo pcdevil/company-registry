@@ -24,6 +24,14 @@ class AbstractRoute {
 	_getHandler () {
 		throw new NotImplementedError('getHandler');
 	}
+
+	_successResponse (data) {
+		return { data, success: true };
+	}
+
+	_errorResponse () {
+		return { data: [], error: { code: 500 }, success: false };
+	}
 }
 
 module.exports = { AbstractRoute };

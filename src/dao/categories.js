@@ -44,7 +44,7 @@ class CategoriesDao {
 
 	async read (id) {
 		const Model = this.getModel();
-		const document = await Model.findById(id);
+		const document = await Model.findById(id).orFail();
 		return document;
 	}
 

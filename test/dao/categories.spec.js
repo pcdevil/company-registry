@@ -18,6 +18,7 @@ describe('CategoriesDao', () => {
 	let document1Updated;
 	let document2;
 	let documentList;
+	let findByIdReturn;
 	let schema;
 	let subject;
 
@@ -28,7 +29,8 @@ describe('CategoriesDao', () => {
 		documentList = [document1, document2];
 		Model = sinon.stub().returns(document1);
 		Model.find = sinon.stub().returns(documentList);
-		Model.findById = sinon.stub().returns(document1);
+		findByIdReturn = { orFail: sinon.stub().returns(document1) };
+		Model.findById = sinon.stub().returns(findByIdReturn);
 		Model.findByIdAndDelete = sinon.stub().returns(document1);
 		Model.findByIdAndUpdate = sinon.stub().returns(document1Updated);
 		schema = { obj: { name: { type: String, required: true, unique: true } } };
@@ -151,13 +153,14 @@ describe('CategoriesDao', () => {
 			await subject.read(id1);
 
 			expect(Model.findById).to.have.been.calledWith(id1);
+			expect(findByIdReturn.orFail).to.have.been.calledAfter(Model.findById);
 		});
 
 		it('should wait for the document to resolve', async () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			Model.findById.callsFake(createAsyncStubCallFake(beforeStub));
+			findByIdReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub));
 			await subject.read(id1);
 			afterStub();
 

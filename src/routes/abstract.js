@@ -26,7 +26,7 @@ class AbstractRoute {
 	}
 
 	_successResponse (data) {
-		return { data, success: true };
+		return { data, statusCode: 200 };
 	}
 
 	_errorResponse () {

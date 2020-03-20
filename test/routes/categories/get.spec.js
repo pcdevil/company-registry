@@ -71,7 +71,7 @@ describe('CategoriesGetRoute', () => {
 
 				expect(actual).to.be.an('object');
 				expect(actual.data).to.be.an('array');
-				expect(actual.success).to.be.true;
+				expect(actual.statusCode).to.be.eql(200);
 			});
 
 			it('should return the documents from the dao as simple objects', async () => {

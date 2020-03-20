@@ -59,7 +59,7 @@ describe('CategoriesIdGetRoute', () => {
 
 				expect(actual).to.be.an('object');
 				expect(actual.data).to.be.an('array');
-				expect(actual.success).to.be.true;
+				expect(actual.statusCode).to.be.eql(200);
 			});
 
 

@@ -32,6 +32,12 @@ class AbstractRoute {
 	_errorResponse () {
 		return { data: [], error: { code: 500 }, success: false };
 	}
+
+	_throwGenericError (originalError) {
+		const error = new Error('Something went wrong');
+		error.originalError = originalError;
+		throw error;
+	}
 }
 
 module.exports = { AbstractRoute };

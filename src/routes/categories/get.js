@@ -28,12 +28,6 @@ class CategoriesGetRoute extends AbstractRoute {
 			}
 		};
 	}
-
-	_throwGenericError (originalError) {
-		const error = new Error('Something went wrong');
-		error.originalError = originalError;
-		throw error;
-	}
 }
 
 module.exports = { CategoriesGetRoute };

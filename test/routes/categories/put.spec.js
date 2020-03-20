@@ -75,20 +75,35 @@ describe('CategoriesPutRoute', () => {
 				expect(actual.data).to.be.eql(documentObjectList);
 			});
 
-			it('should return a well-formed response when the dao throws an error', async () => {
-				categoriesDao.create.rejects(new Error());
+			it('should catch dao errors and throw a generic one instead', async () => {
+				const daoError = new Error('Error in the file /etc/passwd in line 14.');
+				categoriesDao.create.rejects(daoError);
 				const { handler } = subject.getOptions();
 
-				const actual = await handler(request, reply);
+				try {
+					await handler(request, reply);
+					throw new Error('fell through');
+				} catch (e) {
+					expect(e).to.be.instanceof(Error);
+					expect(e.message).to.be.eql('Something went wrong');
+					expect(e.originalError).to.be.equal(daoError);
+				}
+			});
 
-				expect(reply.code).to.have.been.calledWith(500);
+			it('should transform and throw the duplicate key error from the dao', async () => {
+				const daoError = new Error('E11000 duplicate key error collection');
+				daoError.code = 11000;
+				categoriesDao.create.rejects(daoError);
+				const { handler } = subject.getOptions();
 
-				expect(actual).to.be.an('object');
-				expect(actual.data).to.be.an('array');
-				expect(actual.data).to.be.empty;
-				expect(actual.error).to.be.an('object');
-				expect(actual.error.code).to.be.eql(500);
-				expect(actual.success).to.be.false;
+				try {
+					await handler(request, reply);
+					throw new Error('fell through');
+				} catch (e) {
+					expect(e).to.be.instanceof(Error);
+					expect(e.statusCode).to.be.eql(400);
+					expect(e.message).to.be.eql(`the "name" property should be unique in the collection`);
+				}
 			});
 		});
 	});

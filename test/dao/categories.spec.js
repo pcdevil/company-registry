@@ -51,6 +51,16 @@ describe('CategoriesDao', () => {
 		subject = new CategoriesDao(mongooseModule);
 	});
 
+	afterEach(() => {
+		CategoriesDao.clearInstance();
+	});
+
+	it('should act as a singleton to avoid mongoose errors when trying to overwrite the model', () => {
+		const secondSubject = new CategoriesDao(mongooseModule);
+
+		expect(secondSubject).to.be.equal(subject);
+	});
+
 	describe('getModelName()', () => {
 		it('should return the name of the model', () => {
 			expect(CategoriesDao.getModelName()).to.be.eql('Categories');

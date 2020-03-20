@@ -56,7 +56,7 @@ class CategoriesDao {
 
 	async delete (id) {
 		const Model = this.getModel();
-		const document = await Model.findByIdAndDelete(id);
+		const document = await Model.findByIdAndDelete(id).orFail();
 		return document;
 	}
 

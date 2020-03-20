@@ -30,8 +30,7 @@ class CategoriesPutRoute extends AbstractRoute {
 			try {
 				const { name } = request.body;
 				const document = await this._categoriesDao.create(name);
-				const data = [document]
-					.map((document) => this._categoriesDao.documentToObject(document));
+				const data = this._categoriesDao.documentListToObject([document]);
 
 				return this._successResponse(data);
 			} catch (e) {

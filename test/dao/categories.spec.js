@@ -18,15 +18,21 @@ describe('CategoriesDao', () => {
 	let document1Updated;
 	let document2;
 	let documentList;
+	let documentObject1;
+	let documentObject2;
+	let documentObjectList;
 	let findByIdReturn;
 	let schema;
 	let subject;
 
 	beforeEach(() => {
 		document1 = { _id: { toString: () => id1 }, name: name1, save: sinon.stub() };
+		documentObject1 = { id: id1, name: name1 };
 		document1Updated = { _id: { toString: () => id1 }, name: name1Updated, save: sinon.stub() };
 		document2 = { _id: { toString: () => id2 }, name: name2, save: sinon.stub() };
+		documentObject2 = { id: id2, name: name2 };
 		documentList = [document1, document2];
+		documentObjectList = [documentObject1, documentObject2];
 		Model = sinon.stub().returns(document1);
 		Model.find = sinon.stub().returns(documentList);
 		findByIdReturn = { orFail: sinon.stub().returns(document1) };
@@ -237,7 +243,16 @@ describe('CategoriesDao', () => {
 			const actual = subject.documentToObject(document1);
 
 			expect(actual.constructor.name).to.be.eql('Object');
-			expect(actual).to.be.eql({ id: id1, name: name1 });
+			expect(actual).to.be.eql(documentObject1);
+		});
+	});
+
+	describe('documentListToObject()', () => {
+		it('should strip any mongoose internal and return back the primitive objects in a list', () => {
+			const actual = subject.documentListToObject(documentList);
+
+			expect(actual).to.be.an('array');
+			expect(actual).to.be.eql(documentObjectList);
 		});
 	});
 });

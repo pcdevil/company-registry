@@ -66,6 +66,10 @@ class CategoriesDao {
 		return { id, name };
 	}
 
+	documentListToObject (documentList) {
+		return documentList.map((document) => this.documentToObject(document));
+	}
+
 	_createModel () {
 		const schema = this.getSchema();
 		this._model = this._mongooseModule.model(this.constructor.getModelName(), schema);

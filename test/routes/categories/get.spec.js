@@ -37,6 +37,7 @@ describe('CategoriesGetRoute', () => {
 		categoriesDao = {
 			list: sinon.stub().resolves(documentList),
 			documentToObject: documentToObjectStub,
+			documentListToObject: sinon.stub().returns(documentObjectList),
 		};
 		request = {};
 		reply = { code: sinon.stub() };

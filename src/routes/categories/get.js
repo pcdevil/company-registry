@@ -20,8 +20,7 @@ class CategoriesGetRoute extends AbstractRoute {
 		return async (request, reply) => {
 			try {
 				const documentList = await this._categoriesDao.list();
-				const data = documentList
-					.map((document) => this._categoriesDao.documentToObject(document));
+				const data = this._categoriesDao.documentListToObject(documentList);
 				return this._successResponse(data);
 			} catch (e) {
 				this._throwGenericError(e);

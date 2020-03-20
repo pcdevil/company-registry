@@ -24,6 +24,7 @@ describe('CategoriesPutRoute', () => {
 		categoriesDao = {
 			create: sinon.stub().resolves(document1),
 			documentToObject: sinon.stub().returns(documentObject1),
+			documentListToObject: sinon.stub().returns(documentObjectList),
 		};
 		request = { body: { name: name1 } };
 		reply = { code: sinon.stub() };

@@ -22,6 +22,7 @@ describe('CategoriesDao', () => {
 	let documentObject2;
 	let documentObjectList;
 	let findByIdReturn;
+	let findByIdAndUpdateReturn;
 	let schema;
 	let subject;
 
@@ -36,9 +37,10 @@ describe('CategoriesDao', () => {
 		Model = sinon.stub().returns(document1);
 		Model.find = sinon.stub().returns(documentList);
 		findByIdReturn = { orFail: sinon.stub().returns(document1) };
+		findByIdAndUpdateReturn = { orFail: sinon.stub().returns(document1Updated) };
 		Model.findById = sinon.stub().returns(findByIdReturn);
 		Model.findByIdAndDelete = sinon.stub().returns(document1);
-		Model.findByIdAndUpdate = sinon.stub().returns(document1Updated);
+		Model.findByIdAndUpdate = sinon.stub().returns(findByIdAndUpdateReturn);
 		schema = { obj: { name: { type: String, required: true, unique: true } } };
 		mongooseModule = {
 			Schema: sinon.stub().returns(schema),
@@ -189,13 +191,14 @@ describe('CategoriesDao', () => {
 			await subject.update(id1, name1Updated);
 
 			expect(Model.findByIdAndUpdate).to.have.been.calledWith(id1, { name: name1Updated }, { new: true });
+			expect(findByIdAndUpdateReturn.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
 		});
 
 		it('should wait for the document to resolve', async () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			Model.findByIdAndUpdate.callsFake(createAsyncStubCallFake(beforeStub));
+			findByIdAndUpdateReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub));
 			await subject.update(id1, name1Updated);
 			afterStub();
 

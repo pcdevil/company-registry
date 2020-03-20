@@ -50,7 +50,7 @@ class CategoriesDao {
 
 	async update (id, name) {
 		const Model = this.getModel();
-		const document = await Model.findByIdAndUpdate(id, { name }, this._getUpdateOptions());
+		const document = await Model.findByIdAndUpdate(id, { name }, this._getUpdateOptions()).orFail();
 		return document;
 	}
 

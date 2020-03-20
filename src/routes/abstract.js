@@ -29,9 +29,33 @@ class AbstractRoute {
 		return { data, statusCode: 200 };
 	}
 
+	_throwError (e) {
+		if (e.code === 11000) {
+			this._throwDuplicateKeyError();
+		}
+
+		if (e.name === 'DocumentNotFoundError') {
+			this._throwNotFoundError();
+		}
+
+		this._throwGenericError(e);
+	}
+
 	_throwGenericError (originalError) {
 		const error = new Error('Something went wrong');
 		error.originalError = originalError;
+		throw error;
+	}
+
+	_throwDuplicateKeyError () {
+		const error = new Error(`the "name" property should be unique in the collection`);
+		error.statusCode = 400;
+		throw error;
+	}
+
+	_throwNotFoundError () {
+		const error = new Error('the given id is not present in the collection');
+		error.statusCode = 404;
 		throw error;
 	}
 }

@@ -23,7 +23,7 @@ class CategoriesGetRoute extends AbstractRoute {
 				const data = this._categoriesDao.documentListToObject(documentList);
 				return this._successResponse(data);
 			} catch (e) {
-				this._throwGenericError(e);
+				this._throwError(e);
 			}
 		};
 	}

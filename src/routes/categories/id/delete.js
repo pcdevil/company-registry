@@ -24,19 +24,9 @@ class	CategoriesIdDeleteRoute extends AbstractRoute {
 				const data = this._categoriesDao.documentListToObject([document]);
 				return this._successResponse(data);
 			} catch (e) {
-				if (e.name === 'DocumentNotFoundError') {
-					this._throwNotFoundError();
-				} else {
-					this._throwGenericError(e);
-				}
+				this._throwError(e);
 			}
 		};
-	}
-
-	_throwNotFoundError () {
-		const error = new Error('the given id is not present in the collection');
-		error.statusCode = 404;
-		throw error;
 	}
 }
 

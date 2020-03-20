@@ -34,19 +34,9 @@ class CategoriesPutRoute extends AbstractRoute {
 
 				return this._successResponse(data);
 			} catch (e) {
-				if (e.code === 11000) {
-					this._throwDuplicateKeyError();
-				} else {
-					this._throwGenericError(e);
-				}
+				this._throwError(e);
 			}
 		};
-	}
-
-	_throwDuplicateKeyError () {
-		const error = new Error(`the "name" property should be unique in the collection`);
-		error.statusCode = 400;
-		throw error;
 	}
 }
 

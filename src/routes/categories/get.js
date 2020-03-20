@@ -24,10 +24,15 @@ class CategoriesGetRoute extends AbstractRoute {
 					.map((document) => this._categoriesDao.documentToObject(document));
 				return this._successResponse(data);
 			} catch (e) {
-				reply.code(500);
-				return this._errorResponse();
+				this._throwGenericError(e);
 			}
 		};
+	}
+
+	_throwGenericError (originalError) {
+		const error = new Error('Something went wrong');
+		error.originalError = originalError;
+		throw error;
 	}
 }
 

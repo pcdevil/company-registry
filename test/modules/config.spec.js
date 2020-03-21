@@ -6,9 +6,7 @@ const { Config } = require('../../src/modules');
 
 describe('Config', () => {
 	const envStub = {
-		MONGODB_HOST: 'mongodb-test',
-		MONGODB_PORT: 4567,
-		MONGODB_DATABASE: 'test',
+		MONGODB_URI: 'mongodb://mongodb-test:4567/test',
 
 		SERVER_HOST: 'company-registry',
 		SERVER_PORT: 1234,
@@ -26,9 +24,7 @@ describe('Config', () => {
 
 	const configProperties = {
 		mongodb: [
-			{ property: 'host', env: 'MONGODB_HOST', defaultValue: 'mongodb' },
-			{ property: 'port', env: 'MONGODB_PORT', defaultValue: 27017 },
-			{ property: 'database', env: 'MONGODB_DATABASE', defaultValue: 'company-registry' },
+			{ property: 'uri', env: 'MONGODB_URI', defaultValue: 'mongodb://mongodb:27017/company-registry' },
 		],
 		server: [
 			{ property: 'host', env: 'SERVER_HOST', defaultValue: 'localhost' },

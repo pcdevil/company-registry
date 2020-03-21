@@ -12,7 +12,7 @@ describe('Database', () => {
 	let subject;
 
 	beforeEach(() => {
-		config = { mongodb: { host: 'mongodb-test', port: 4567, database: 'test' } };
+		config = { mongodb: { uri: 'mongodb://mongodb-test:4567/test' } };
 		mongooseModule = {
 			connect: sinon.stub(),
 			disconnect: sinon.stub(),
@@ -26,11 +26,9 @@ describe('Database', () => {
 		});
 
 		it('should call the mongoose connect when the connect method is called', () => {
-			const mongoUri = `mongodb://${config.mongodb.host}:${config.mongodb.port}/${config.mongodb.database}`;
-
 			subject.connect();
 
-			expect(mongooseModule.connect).to.have.been.calledWith(mongoUri, {
+			expect(mongooseModule.connect).to.have.been.calledWith(config.mongodb.uri, {
 				useCreateIndex: true,
 				useFindAndModify: false,
 				useNewUrlParser: true,

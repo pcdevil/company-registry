@@ -18,9 +18,7 @@ class Config {
 
 	get mongodb () {
 		return {
-			host: nullishOperator(this._parsedConfig.MONGODB_HOST, 'mongodb'),
-			port: nullishOperator(this._parsedConfig.MONGODB_PORT, 27017),
-			database: nullishOperator(this._parsedConfig.MONGODB_DATABASE, 'company-registry'),
+			uri: nullishOperator(this._parsedConfig.MONGODB_URI, 'mongodb://mongodb:27017/company-registry'),
 		};
 	}
 

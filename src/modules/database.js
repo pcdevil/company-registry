@@ -15,15 +15,11 @@ class Database {
 	}
 
 	async connect () {
-		await this._mongooseModule.connect(this._getMongooseUri(), this._getMongooseOptions());
+		await this._mongooseModule.connect(this._config.mongodb.uri, this._getMongooseOptions());
 	}
 
 	async disconnect () {
 		await this._mongooseModule.disconnect();
-	}
-
-	_getMongooseUri () {
-		return `mongodb://${this._config.mongodb.host}:${this._config.mongodb.port}/${this._config.mongodb.database}`;
 	}
 
 	_getMongooseOptions () {

@@ -5,9 +5,9 @@ const { CategoriesDao } = require('../../../dao');
 
 class	CategoriesIdGetRoute extends AbstractRoute {
 	constructor (categoriesDao) {
-		const method = 'GET';
-		const url = '/categories/:id';
-		super(method, url);
+		super();
+		this._method = 'GET';
+		this._url = '/categories/:id';
 		this._categoriesDao = categoriesDao;
 	}
 

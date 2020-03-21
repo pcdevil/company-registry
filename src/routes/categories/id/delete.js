@@ -5,9 +5,9 @@ const { CategoriesDao } = require('../../../dao');
 
 class	CategoriesIdDeleteRoute extends AbstractRoute {
 	constructor (categoriesDao) {
-		const method = 'DELETE';
-		const url = '/categories/:id';
-		super(method, url);
+		super();
+		this._method = 'DELETE';
+		this._url = '/categories/:id';
 		this._categoriesDao = categoriesDao;
 	}
 

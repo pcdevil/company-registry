@@ -6,43 +6,64 @@ const { NotImplementedError } = require('../../src/lib');
 
 
 describe('AbstractRoute', () => {
-	class TestRoute extends AbstractRoute {
-		_getHandler () {
-			return handler;
-		}
-	}
+	let subject;
 
-	const method = 'GET';
-	const url = '/';
-	const schema = {
-		body: {
-			type: 'object',
-			properties: { name: { type: 'string' } },
-		},
-	};
-	const handler = async () => ({ test: true });
+	beforeEach(() => {
+		subject = new AbstractRoute();
+	});
+
+	describe('getMethod()', () => {
+		it('should return the default value', () => {
+			const actual = subject.getMethod();
+
+			expect(actual).to.be.eql('');
+		});
+	});
+
+	describe('getUrl()', () => {
+		it('should return the default value', () => {
+			const actual = subject.getUrl();
+
+			expect(actual).to.be.eql('');
+		});
+	});
+
+	describe('getSchema()', () => {
+		it('should return the default value', () => {
+			const actual = subject.getSchema();
+
+			expect(actual).to.be.eql({});
+		});
+	});
 
 	describe('getOptions()', () => {
 		it('should throw an error when the _getHandler method is not implemented', () => {
-			const subject = new AbstractRoute(method, url, schema);
-
 			expect(() => subject.getOptions()).to.throw(NotImplementedError);
 		});
 
 		it('should return the properties as an object', () => {
-			const subject = new TestRoute(method, url, schema);
+			const method = 'GET';
+			const url = '/';
+			const schema = { test: true };
+			const handler = async () => ({ test: true });
 
-			const actual = subject.getOptions();
+			class TestRoute extends AbstractRoute {
+				constructor () {
+					super();
+					this._method = method;
+					this._url = url;
+					this._schema = schema;
+				}
+
+				_getHandler () {
+					return handler;
+				}
+			}
+
+			const testSubject = new TestRoute();
+			const actual = testSubject.getOptions();
 
 			expect(actual).to.be.eql({ method, url, schema, handler });
-		});
-
-		it('should return an empty schema if it was not defined', () => {
-			const subject = new TestRoute(method, url);
-
-			const actual = subject.getOptions();
-
-			expect(actual.schema).to.be.eql({});
 		});
 	});
 });

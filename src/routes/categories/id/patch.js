@@ -5,9 +5,9 @@ const { CategoriesDao } = require('../../../dao');
 
 class	CategoriesIdPatchRoute extends AbstractRoute {
 	constructor (categoriesDao) {
-		const method = 'PATCH';
-		const url = '/categories/:id';
-		super(method, url);
+		super();
+		this._method = 'PATCH';
+		this._url = '/categories/:id';
 		this._categoriesDao = categoriesDao;
 	}
 

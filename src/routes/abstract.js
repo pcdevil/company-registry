@@ -3,14 +3,26 @@
 const { NotImplementedError } = require('../lib');
 
 class AbstractRoute {
-	constructor (method, url, schema = {}) {
-		this._method = method;
-		this._url = url;
-		this._schema = schema;
+	constructor () {
+		this._method = '';
+		this._url = '';
+		this._schema = {};
 	}
 
 	static createDefault () {
 		return new this();
+	}
+
+	getMethod () {
+		return this._method;
+	}
+
+	getUrl () {
+		return this._url;
+	}
+
+	getSchema () {
+		return this._schema;
 	}
 
 	getOptions () {

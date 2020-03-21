@@ -5,9 +5,10 @@ const { CategoriesDao } = require('../../dao');
 
 class CategoriesPutRoute extends AbstractRoute {
 	constructor (categoriesDao) {
-		const method = 'PUT';
-		const url = '/categories';
-		const schema = {
+		super();
+		this._method = 'PUT';
+		this._url = '/categories';
+		this._schema = {
 			body: {
 				type: 'object',
 				properties: {
@@ -16,7 +17,6 @@ class CategoriesPutRoute extends AbstractRoute {
 				required: ['name'],
 			},
 		};
-		super(method, url, schema);
 		this._categoriesDao = categoriesDao;
 	}
 

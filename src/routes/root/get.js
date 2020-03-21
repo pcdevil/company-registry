@@ -4,7 +4,9 @@ const { AbstractRoute } = require('../abstract');
 
 class RootGetRoute extends AbstractRoute {
 	constructor () {
-		super('GET', '/');
+		super();
+		this._method = 'GET';
+		this._url = '/';
 	}
 
 	_getHandler () {

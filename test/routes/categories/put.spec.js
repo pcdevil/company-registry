@@ -17,7 +17,7 @@ describe('CategoriesPutRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		documentObject1 = { id: id1, name: name1 };
+		documentObject1 = { _id: id1, name: name1 };
 		documentObjectList = [documentObject1];
 		categoriesDao = {
 			create: sinon.stub().resolves(documentObject1),

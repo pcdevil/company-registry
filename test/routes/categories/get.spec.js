@@ -20,8 +20,8 @@ describe('CategoriesGetRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		documentObject1 = { id: id1, name: name1 };
-		documentObject2 = { id: id2, name: name2 };
+		documentObject1 = { _id: id1, name: name1 };
+		documentObject2 = { _id: id2, name: name2 };
 		documentObjectList = [documentObject1, documentObject2];
 
 		categoriesDao = {

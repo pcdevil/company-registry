@@ -18,12 +18,18 @@ describe('AbstractDao', () => {
 		}
 	}
 
+	function createObjectId (id) {
+		return { toString: () => id };
+	}
+
 	const testId = '5e735ae25d27a6d4b2c6cd51id';
 	let Model;
 	let modelStub;
 	let mongooseModule;
 	let testDocument;
+	let testObject;
 	let updatedTestDocument;
+	let updatedTestObject;
 	let findByIdReturn;
 	let findByIdAndDeleteReturn;
 	let findByIdAndUpdateReturn;
@@ -31,8 +37,20 @@ describe('AbstractDao', () => {
 	let testSubject;
 
 	beforeEach(() => {
-		testDocument = { _id: { toString: () => testId }, value: 123, save: sinon.stub() };
-		updatedTestDocument = { _id: { toString: () => testId }, value: 456, save: sinon.stub() };
+		testObject = { _id: createObjectId(testId), value: 123 };
+		testDocument = {
+			_id: createObjectId(testId),
+			value: 123,
+			save: sinon.stub(),
+			toObject: sinon.stub().returns(testObject),
+		};
+		updatedTestObject = { _id: createObjectId(testId), value: 456 };
+		updatedTestDocument = {
+			_id: createObjectId(testId),
+			value: 456,
+			save: sinon.stub(),
+			toObject: sinon.stub().returns(updatedTestObject),
+		};
 		Model = sinon.stub().returns(testDocument);
 		Model.find = sinon.stub().returns([testDocument]);
 		findByIdReturn = { orFail: sinon.stub().returns(testDocument) };
@@ -123,6 +141,7 @@ describe('AbstractDao', () => {
 			await testSubject.list();
 
 			expect(Model.find).to.have.been.calledWith({});
+			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -139,7 +158,7 @@ describe('AbstractDao', () => {
 		it('should return the list of the existing documents as objects', async () => {
 			const actual = await testSubject.list();
 
-			expect(actual).to.be.eql([{ id: testId, value: 123 }]);
+			expect(actual).to.be.eql([testObject]);
 		});
 	});
 
@@ -154,14 +173,7 @@ describe('AbstractDao', () => {
 			expect(Model).to.have.been.calledWithNew;
 			expect(Model).to.have.been.calledWith({ value: 123 });
 			expect(testDocument.save).to.have.been.called;
-		});
-
-		it('should filter the properties based on the schema', async () => {
-			await testSubject.create({ invalidProperty: true, value: 123 });
-
-			expect(Model).to.have.been.calledWithNew;
-			expect(Model).to.have.been.calledWith({ value: 123 });
-			expect(testDocument.save).to.have.been.called;
+			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -178,7 +190,7 @@ describe('AbstractDao', () => {
 		it('should return the new document', async () => {
 			const actual = await testSubject.create({ value: 123 });
 
-			expect(actual).to.be.eql({ id: testId, value: 123 });
+			expect(actual).to.be.eql(testObject);
 		});
 	});
 
@@ -192,6 +204,7 @@ describe('AbstractDao', () => {
 
 			expect(Model.findById).to.have.been.calledWith(testId);
 			expect(findByIdReturn.orFail).to.have.been.calledAfter(Model.findById);
+			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -208,7 +221,7 @@ describe('AbstractDao', () => {
 		it('should return the existing document', async () => {
 			const actual = await testSubject.read(testId);
 
-			expect(actual).to.be.eql({ id: testId, value: 123 });
+			expect(actual).to.be.eql(testObject);
 		});
 	});
 
@@ -222,13 +235,7 @@ describe('AbstractDao', () => {
 
 			expect(Model.findByIdAndUpdate).to.have.been.calledWith(testId, { value: 456 }, { new: true });
 			expect(findByIdAndUpdateReturn.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
-		});
-
-		it('should filter the properties based on the schema', async () => {
-			await testSubject.update(testId, { invalidProperty: true, value: 456 });
-
-			expect(Model.findByIdAndUpdate).to.have.been.calledWith(testId, { value: 456 }, { new: true });
-			expect(findByIdAndUpdateReturn.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
+			expect(updatedTestDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -245,7 +252,7 @@ describe('AbstractDao', () => {
 		it('should return the updated document', async () => {
 			const actual = await testSubject.update(testId, { value: 456 });
 
-			expect(actual).to.be.eql({ id: testId, value: 456 });
+			expect(actual).to.be.eql(updatedTestObject);
 		});
 	});
 
@@ -259,6 +266,7 @@ describe('AbstractDao', () => {
 
 			expect(Model.findByIdAndDelete).to.have.been.calledWith(testId);
 			expect(findByIdAndDeleteReturn.orFail).to.have.been.calledAfter(Model.findByIdAndDelete);
+			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
 		it('should wait for the document to resolve', async () => {
@@ -275,7 +283,7 @@ describe('AbstractDao', () => {
 		it('should return the deleted document', async () => {
 			const actual = await testSubject.delete(testId);
 
-			expect(actual).to.be.eql({ id: testId, value: 123 });
+			expect(actual).to.be.eql(testObject);
 		});
 	});
 });

@@ -33,34 +33,32 @@ class AbstractDao {
 	async list () {
 		const Model = this.getModel();
 		const documentList = await Model.find({});
-		return this._transformToObjectList(documentList);
+		return documentList.map((document) => document.toObject(this._getToObjectOptions()));
 	}
 
-	async create (rawProperties) {
+	async create (properties) {
 		const Model = this.getModel();
-		const properties = this._filterProperties(rawProperties);
 		const document = new Model(properties);
 		await document.save();
-		return this._transformToObject(document);
+		return document.toObject(this._getToObjectOptions());
 	}
 
 	async read (id) {
 		const Model = this.getModel();
 		const document = await Model.findById(id).orFail();
-		return this._transformToObject(document);
+		return document.toObject(this._getToObjectOptions());
 	}
 
-	async update (id, rawProperties) {
+	async update (id, properties) {
 		const Model = this.getModel();
-		const properties = this._filterProperties(rawProperties);
 		const document = await Model.findByIdAndUpdate(id, properties, this._getUpdateOptions()).orFail();
-		return this._transformToObject(document);
+		return document.toObject(this._getToObjectOptions());
 	}
 
 	async delete (id) {
 		const Model = this.getModel();
 		const document = await Model.findByIdAndDelete(id).orFail();
-		return this._transformToObject(document);
+		return document.toObject(this._getToObjectOptions());
 	}
 
 	_createModel () {
@@ -76,16 +74,6 @@ class AbstractDao {
 		this._schema = new this._mongooseModule.Schema(this._getSchemaDescriptor());
 	}
 
-	_createPropertyKeyList () {
-		this._propertyKeyList = Object.keys(this._getSchemaDescriptor());
-	}
-
-	_filterProperties (properties) {
-		const entries = Object.entries(properties)
-			.filter(([property, value]) => this._hasProperty(property));
-		return Object.fromEntries(entries);
-	}
-
 	_getSchemaDescriptor () {
 		throw new NotImplementedError('_getSchemaDescriptor');
 	}
@@ -96,22 +84,10 @@ class AbstractDao {
 		};
 	}
 
-	_hasProperty (property) {
-		if (!this._propertyKeyList) {
-			this._createPropertyKeyList();
-		}
-		return this._propertyKeyList.includes(property);
-	}
-
-	_transformToObject (document) {
-		const { _id, ...properties } = document;
-		const id = _id.toString();
-		const rawProperties = this._filterProperties(properties);
-		return { id, ...rawProperties };
-	}
-
-	_transformToObjectList (documentList) {
-		return documentList.map((document) => this._transformToObject(document));
+	_getToObjectOptions () {
+		return {
+			versionKey: false,
+		};
 	}
 }
 

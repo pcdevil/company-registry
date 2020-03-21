@@ -17,7 +17,7 @@ describe('CategoriesIdPatchRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		documentObject1Updated = { id: id1, name: name1Updated };
+		documentObject1Updated = { _id: id1, name: name1Updated };
 		documentObjectList = [documentObject1Updated];
 
 		categoriesDao = {

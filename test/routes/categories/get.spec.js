@@ -12,9 +12,6 @@ describe('CategoriesGetRoute', () => {
 	const name1 = 'Test 1 2 3';
 	const name2 = 'Test 4 5 6';
 	let categoriesDao;
-	let document1;
-	let document2;
-	let documentList;
 	let documentObject1;
 	let documentObject2;
 	let documentObjectList;
@@ -23,21 +20,12 @@ describe('CategoriesGetRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		document1 = { _id: { toString: () => id1 }, name: name1, save: sinon.stub() };
-		document2 = { _id: { toString: () => id2 }, name: name2, save: sinon.stub() };
-		documentList = [document1, document2];
 		documentObject1 = { id: id1, name: name1 };
 		documentObject2 = { id: id2, name: name2 };
 		documentObjectList = [documentObject1, documentObject2];
 
-		const documentToObjectStub = sinon.stub();
-		documentToObjectStub.withArgs(document1).returns(documentObject1);
-		documentToObjectStub.withArgs(document2).returns(documentObject2);
-
 		categoriesDao = {
-			list: sinon.stub().resolves(documentList),
-			documentToObject: documentToObjectStub,
-			documentListToObject: sinon.stub().returns(documentObjectList),
+			list: sinon.stub().resolves(documentObjectList),
 		};
 		request = {};
 		reply = { code: sinon.stub() };

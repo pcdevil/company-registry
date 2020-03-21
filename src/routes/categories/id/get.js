@@ -21,8 +21,7 @@ class	CategoriesIdGetRoute extends AbstractRoute {
 			try {
 				const { id } = request.params;
 				const document = await this._categoriesDao.read(id);
-				const data = this._categoriesDao.documentListToObject([document]);
-				return this._successResponse(data);
+				return this._successResponse([document]);
 			} catch (e) {
 				this._throwError(e);
 			}

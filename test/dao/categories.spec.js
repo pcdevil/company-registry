@@ -19,6 +19,7 @@ describe('CategoriesDao', () => {
 	let document2;
 	let documentList;
 	let documentObject1;
+	let documentObject1Updated;
 	let documentObject2;
 	let documentObjectList;
 	let findByIdReturn;
@@ -31,6 +32,7 @@ describe('CategoriesDao', () => {
 		document1 = { _id: { toString: () => id1 }, name: name1, save: sinon.stub() };
 		documentObject1 = { id: id1, name: name1 };
 		document1Updated = { _id: { toString: () => id1 }, name: name1Updated, save: sinon.stub() };
+		documentObject1Updated = { id: id1, name: name1Updated };
 		document2 = { _id: { toString: () => id2 }, name: name2, save: sinon.stub() };
 		documentObject2 = { id: id2, name: name2 };
 		documentList = [document1, document2];
@@ -119,17 +121,17 @@ describe('CategoriesDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			Model.find.callsFake(createAsyncStubCallFake(beforeStub));
+			Model.find.callsFake(createAsyncStubCallFake(beforeStub, []));
 			await subject.list();
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
-		it('should return the list of the existing documents', async () => {
+		it('should return the list of the existing documents as objects', async () => {
 			const actual = await subject.list();
 
-			expect(actual).to.be.equal(documentList);
+			expect(actual).to.be.eql(documentObjectList);
 		});
 	});
 
@@ -160,7 +162,7 @@ describe('CategoriesDao', () => {
 		it('should return the new document', async () => {
 			const actual = await subject.create(name1);
 
-			expect(actual).to.be.equal(document1);
+			expect(actual).to.be.eql(documentObject1);
 		});
 	});
 
@@ -180,7 +182,7 @@ describe('CategoriesDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub));
+			findByIdReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, document1));
 			await subject.read(id1);
 			afterStub();
 
@@ -190,7 +192,7 @@ describe('CategoriesDao', () => {
 		it('should return the existing document', async () => {
 			const actual = await subject.read(id1);
 
-			expect(actual).to.be.equal(document1);
+			expect(actual).to.be.eql(documentObject1);
 		});
 	});
 
@@ -210,7 +212,7 @@ describe('CategoriesDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdAndUpdateReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub));
+			findByIdAndUpdateReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, document1Updated));
 			await subject.update(id1, name1Updated);
 			afterStub();
 
@@ -220,7 +222,7 @@ describe('CategoriesDao', () => {
 		it('should return the updated document', async () => {
 			const actual = await subject.update(id1, name1Updated);
 
-			expect(actual).to.be.equal(document1Updated);
+			expect(actual).to.be.eql(documentObject1Updated);
 		});
 	});
 
@@ -240,7 +242,7 @@ describe('CategoriesDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdAndDeleteReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub));
+			findByIdAndDeleteReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, document1));
 			await subject.delete(id1);
 			afterStub();
 
@@ -250,25 +252,7 @@ describe('CategoriesDao', () => {
 		it('should return the deleted document', async () => {
 			const actual = await subject.delete(id1);
 
-			expect(actual).to.be.equal(document1);
-		});
-	});
-
-	describe('documentToObject()', () => {
-		it('should strip any mongoose internal and return back the primitive object', () => {
-			const actual = subject.documentToObject(document1);
-
-			expect(actual.constructor.name).to.be.eql('Object');
 			expect(actual).to.be.eql(documentObject1);
-		});
-	});
-
-	describe('documentListToObject()', () => {
-		it('should strip any mongoose internal and return back the primitive objects in a list', () => {
-			const actual = subject.documentListToObject(documentList);
-
-			expect(actual).to.be.an('array');
-			expect(actual).to.be.eql(documentObjectList);
 		});
 	});
 });

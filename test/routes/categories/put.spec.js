@@ -10,7 +10,6 @@ describe('CategoriesPutRoute', () => {
 	const id1 = '5e735ae25d27a6d4b2c6cd51id';
 	const name1 = 'Test 1 2 3';
 	let categoriesDao;
-	let document1;
 	let documentObject1;
 	let documentObjectList;
 	let request;
@@ -18,13 +17,10 @@ describe('CategoriesPutRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		document1 = { _id: { toString: () => id1 }, name: name1, save: sinon.stub() };
 		documentObject1 = { id: id1, name: name1 };
 		documentObjectList = [documentObject1];
 		categoriesDao = {
-			create: sinon.stub().resolves(document1),
-			documentToObject: sinon.stub().returns(documentObject1),
-			documentListToObject: sinon.stub().returns(documentObjectList),
+			create: sinon.stub().resolves(documentObject1),
 		};
 		request = { body: { name: name1 } };
 		reply = { code: sinon.stub() };

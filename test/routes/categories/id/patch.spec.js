@@ -10,7 +10,6 @@ describe('CategoriesIdPatchRoute', () => {
 	const id1 = '5e735ae25d27a6d4b2c6cd51id';
 	const name1Updated = 'Test 1 2 3!';
 	let categoriesDao;
-	let document1Updated;
 	let documentObject1Updated;
 	let documentObjectList;
 	let request;
@@ -18,14 +17,11 @@ describe('CategoriesIdPatchRoute', () => {
 	let subject;
 
 	beforeEach(() => {
-		document1Updated = { _id: { toString: () => id1 }, name: name1Updated, save: sinon.stub() };
 		documentObject1Updated = { id: id1, name: name1Updated };
 		documentObjectList = [documentObject1Updated];
 
 		categoriesDao = {
-			update: sinon.stub().resolves(document1Updated),
-			documentToObject: sinon.stub().returns(documentObject1Updated),
-			documentListToObject: sinon.stub().returns(documentObjectList),
+			update: sinon.stub().resolves(documentObject1Updated),
 		};
 		request = { body: { name: name1Updated }, params: { id: id1 } };
 		reply = { code: sinon.stub() };

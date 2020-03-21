@@ -43,42 +43,32 @@ class CategoriesDao {
 	async list () {
 		const Model = this.getModel();
 		const documentList = await Model.find({});
-		return documentList;
+		return this._transformToObjectList(documentList);
 	}
 
 	async create (name) {
 		const Model = this.getModel();
 		const document = new Model({ name });
 		await document.save();
-		return document;
+		return this._transformToObject(document);
 	}
 
 	async read (id) {
 		const Model = this.getModel();
 		const document = await Model.findById(id).orFail();
-		return document;
+		return this._transformToObject(document);
 	}
 
 	async update (id, name) {
 		const Model = this.getModel();
 		const document = await Model.findByIdAndUpdate(id, { name }, this._getUpdateOptions()).orFail();
-		return document;
+		return this._transformToObject(document);
 	}
 
 	async delete (id) {
 		const Model = this.getModel();
 		const document = await Model.findByIdAndDelete(id).orFail();
-		return document;
-	}
-
-	documentToObject (document) {
-		const { _id, name } = document;
-		const id = _id.toString();
-		return { id, name };
-	}
-
-	documentListToObject (documentList) {
-		return documentList.map((document) => this.documentToObject(document));
+		return this._transformToObject(document);
 	}
 
 	_createModel () {
@@ -100,6 +90,16 @@ class CategoriesDao {
 		return {
 			new: true,
 		};
+	}
+
+	_transformToObject (document) {
+		const { _id, name } = document;
+		const id = _id.toString();
+		return { id, name };
+	}
+
+	_transformToObjectList (documentList) {
+		return documentList.map((document) => this._transformToObject(document));
 	}
 }
 

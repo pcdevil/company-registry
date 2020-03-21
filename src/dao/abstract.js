@@ -23,6 +23,10 @@ class AbstractDao {
 		return this._model;
 	}
 
+	getPopulateablePaths () {
+		return '';
+	}
+
 	getSchema () {
 		if (!this._schema) {
 			this._createSchema();
@@ -32,7 +36,9 @@ class AbstractDao {
 
 	async list () {
 		const Model = this.getModel();
-		const documentList = await Model.find({});
+		const documentList = await Model
+			.find({})
+			.populate(this.getPopulateablePaths());
 		return documentList.map((document) => document.toObject(this._getToObjectOptions()));
 	}
 
@@ -45,19 +51,28 @@ class AbstractDao {
 
 	async read (id) {
 		const Model = this.getModel();
-		const document = await Model.findById(id).orFail();
+		const document = await Model
+			.findById(id)
+			.orFail()
+			.populate(this.getPopulateablePaths());
 		return document.toObject(this._getToObjectOptions());
 	}
 
 	async update (id, properties) {
 		const Model = this.getModel();
-		const document = await Model.findByIdAndUpdate(id, properties, this._getUpdateOptions()).orFail();
+		const document = await Model
+			.findByIdAndUpdate(id, properties, this._getUpdateOptions())
+			.orFail()
+			.populate(this.getPopulateablePaths());
 		return document.toObject(this._getToObjectOptions());
 	}
 
 	async delete (id) {
 		const Model = this.getModel();
-		const document = await Model.findByIdAndDelete(id).orFail();
+		const document = await Model
+			.findByIdAndDelete(id)
+			.orFail()
+			.populate(this.getPopulateablePaths());
 		return document.toObject(this._getToObjectOptions());
 	}
 

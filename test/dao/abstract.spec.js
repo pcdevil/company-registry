@@ -13,9 +13,30 @@ describe('AbstractDao', () => {
 			return 'Test';
 		}
 
+		getPopulateablePaths () {
+			return [
+				'test',
+				'sub.level',
+			].join(' ');
+		}
+
 		_getSchemaDescriptor () {
 			return { value: { type: Number } };
 		}
+	}
+
+	function createQueryChain (returnValue, chainMembers = ['orFail', 'populate']) {
+		const query = sinon.stub();
+		query.returns(query);
+		let memberToReturn = query;
+
+		for (const member of chainMembers) {
+			query[member] = sinon.stub().returns(query);
+			memberToReturn = query[member];
+		}
+		memberToReturn.returns(returnValue);
+
+		return query;
 	}
 
 	function createObjectId (id) {
@@ -30,9 +51,6 @@ describe('AbstractDao', () => {
 	let testObject;
 	let updatedTestDocument;
 	let updatedTestObject;
-	let findByIdReturn;
-	let findByIdAndDeleteReturn;
-	let findByIdAndUpdateReturn;
 	let schema;
 	let testSubject;
 
@@ -52,13 +70,10 @@ describe('AbstractDao', () => {
 			toObject: sinon.stub().returns(updatedTestObject),
 		};
 		Model = sinon.stub().returns(testDocument);
-		Model.find = sinon.stub().returns([testDocument]);
-		findByIdReturn = { orFail: sinon.stub().returns(testDocument) };
-		findByIdAndDeleteReturn = { orFail: sinon.stub().returns(testDocument) };
-		findByIdAndUpdateReturn = { orFail: sinon.stub().returns(updatedTestDocument) };
-		Model.findById = sinon.stub().returns(findByIdReturn);
-		Model.findByIdAndDelete = sinon.stub().returns(findByIdAndDeleteReturn);
-		Model.findByIdAndUpdate = sinon.stub().returns(findByIdAndUpdateReturn);
+		Model.find = createQueryChain([testDocument], ['populate']);
+		Model.findById = createQueryChain(testDocument);
+		Model.findByIdAndDelete = createQueryChain(testDocument);
+		Model.findByIdAndUpdate = createQueryChain(updatedTestDocument);
 		schema = { obj: { value: { type: Number } } };
 		modelStub = sinon.stub();
 		modelStub.withArgs('Test').throws(new Error('MissingSchemaError'));
@@ -107,6 +122,16 @@ describe('AbstractDao', () => {
 		});
 	});
 
+	describe('getPopulateablePaths', () => {
+		it('should return an empty string by default', () => {
+			const abstractSubject = new AbstractDao(mongooseModule);
+
+			const actual = abstractSubject.getPopulateablePaths();
+
+			expect(actual).to.be.eql('');
+		});
+	});
+
 	describe('getSchema()', () => {
 		it('should throw an error when the _getSchemaDescriptor method is not implemented', () => {
 			const abstractSubject = new AbstractDao(mongooseModule);
@@ -141,6 +166,8 @@ describe('AbstractDao', () => {
 			await testSubject.list();
 
 			expect(Model.find).to.have.been.calledWith({});
+			expect(Model.find.populate).to.have.been.calledAfter(Model.find);
+			expect(Model.find.populate).to.have.been.calledWith('test sub.level');
 			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
@@ -148,7 +175,7 @@ describe('AbstractDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			Model.find.callsFake(createAsyncStubCallFake(beforeStub, []));
+			Model.find.populate.callsFake(createAsyncStubCallFake(beforeStub, []));
 			await testSubject.list();
 			afterStub();
 
@@ -203,7 +230,9 @@ describe('AbstractDao', () => {
 			await testSubject.read(testId);
 
 			expect(Model.findById).to.have.been.calledWith(testId);
-			expect(findByIdReturn.orFail).to.have.been.calledAfter(Model.findById);
+			expect(Model.findById.orFail).to.have.been.calledAfter(Model.findById);
+			expect(Model.findById.populate).to.have.been.calledAfter(Model.findById.orFail);
+			expect(Model.findById.populate).to.have.been.calledWith('test sub.level');
 			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
@@ -211,7 +240,7 @@ describe('AbstractDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, testDocument));
+			Model.findById.populate.callsFake(createAsyncStubCallFake(beforeStub, testDocument));
 			await testSubject.read(testId);
 			afterStub();
 
@@ -234,7 +263,9 @@ describe('AbstractDao', () => {
 			await testSubject.update(testId, { value: 456 });
 
 			expect(Model.findByIdAndUpdate).to.have.been.calledWith(testId, { value: 456 }, { new: true });
-			expect(findByIdAndUpdateReturn.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
+			expect(Model.findByIdAndUpdate.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
+			expect(Model.findByIdAndUpdate.populate).to.have.been.calledAfter(Model.findByIdAndUpdate.orFail);
+			expect(Model.findByIdAndUpdate.populate).to.have.been.calledWith('test sub.level');
 			expect(updatedTestDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
@@ -242,7 +273,7 @@ describe('AbstractDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdAndUpdateReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, updatedTestDocument));
+			Model.findByIdAndUpdate.populate.callsFake(createAsyncStubCallFake(beforeStub, updatedTestDocument));
 			await testSubject.update(testId, { value: 456 });
 			afterStub();
 
@@ -265,7 +296,9 @@ describe('AbstractDao', () => {
 			await testSubject.delete(testId);
 
 			expect(Model.findByIdAndDelete).to.have.been.calledWith(testId);
-			expect(findByIdAndDeleteReturn.orFail).to.have.been.calledAfter(Model.findByIdAndDelete);
+			expect(Model.findByIdAndDelete.orFail).to.have.been.calledAfter(Model.findByIdAndDelete);
+			expect(Model.findByIdAndDelete.populate).to.have.been.calledAfter(Model.findByIdAndDelete.orFail);
+			expect(Model.findByIdAndDelete.populate).to.have.been.calledWith('test sub.level');
 			expect(testDocument.toObject).to.have.been.calledWith({ versionKey: false });
 		});
 
@@ -273,7 +306,7 @@ describe('AbstractDao', () => {
 			const beforeStub = sinon.stub();
 			const afterStub = sinon.stub();
 
-			findByIdAndDeleteReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, testDocument));
+			Model.findByIdAndDelete.populate.callsFake(createAsyncStubCallFake(beforeStub, testDocument));
 			await testSubject.delete(testId);
 			afterStub();
 

@@ -67,7 +67,7 @@ describe('CategoriesPutRoute', () => {
 
 				const actual = await handler(request, reply);
 
-				expect(categoriesDao.create).to.have.been.calledWith(name1);
+				expect(categoriesDao.create).to.have.been.calledWith({ name: name1 });
 				expect(actual).to.be.an('object');
 				expect(actual.data).to.be.eql(documentObjectList);
 			});

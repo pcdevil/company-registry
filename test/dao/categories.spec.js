@@ -141,7 +141,7 @@ describe('CategoriesDao', () => {
 		});
 
 		it('should create a new model and call the save method properly', async () => {
-			await subject.create(name1);
+			await subject.create({ name: name1 });
 
 			expect(Model).to.have.been.calledWithNew;
 			expect(Model).to.have.been.calledWith({ name: name1 });
@@ -153,14 +153,14 @@ describe('CategoriesDao', () => {
 			const afterStub = sinon.stub();
 
 			document1.save.callsFake(createAsyncStubCallFake(beforeStub));
-			await subject.create(name1);
+			await subject.create({ name: name1 });
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should return the new document', async () => {
-			const actual = await subject.create(name1);
+			const actual = await subject.create({ name: name1 });
 
 			expect(actual).to.be.eql(documentObject1);
 		});
@@ -202,7 +202,7 @@ describe('CategoriesDao', () => {
 		});
 
 		it('should search for the model properly', async () => {
-			await subject.update(id1, name1Updated);
+			await subject.update(id1, { name: name1Updated });
 
 			expect(Model.findByIdAndUpdate).to.have.been.calledWith(id1, { name: name1Updated }, { new: true });
 			expect(findByIdAndUpdateReturn.orFail).to.have.been.calledAfter(Model.findByIdAndUpdate);
@@ -213,14 +213,14 @@ describe('CategoriesDao', () => {
 			const afterStub = sinon.stub();
 
 			findByIdAndUpdateReturn.orFail.callsFake(createAsyncStubCallFake(beforeStub, document1Updated));
-			await subject.update(id1, name1Updated);
+			await subject.update(id1, { name: name1Updated });
 			afterStub();
 
 			expect(afterStub).to.have.been.calledAfter(beforeStub);
 		});
 
 		it('should return the updated document', async () => {
-			const actual = await subject.update(id1, name1Updated);
+			const actual = await subject.update(id1, { name: name1Updated });
 
 			expect(actual).to.be.eql(documentObject1Updated);
 		});

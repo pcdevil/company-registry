@@ -21,7 +21,7 @@ class	CategoriesIdPatchRoute extends AbstractRoute {
 			try {
 				const { id } = request.params;
 				const { name } = request.body;
-				const document = await this._categoriesDao.update(id, name);
+				const document = await this._categoriesDao.update(id, { name });
 				return this._successResponse([document]);
 			} catch (e) {
 				this._throwError(e);

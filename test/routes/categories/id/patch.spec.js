@@ -64,7 +64,7 @@ describe('CategoriesIdPatchRoute', () => {
 
 				const actual = await handler(request, reply);
 
-				expect(categoriesDao.update).to.have.been.calledWith(id1, name1Updated);
+				expect(categoriesDao.update).to.have.been.calledWith(id1, { name: name1Updated });
 				expect(actual).to.be.an('object');
 				expect(actual.data).to.be.eql(documentObjectList);
 			});

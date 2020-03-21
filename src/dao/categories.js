@@ -46,9 +46,10 @@ class CategoriesDao {
 		return this._transformToObjectList(documentList);
 	}
 
-	async create (name) {
+	async create (rawProperties) {
 		const Model = this.getModel();
-		const document = new Model({ name });
+		const properties = this._filterProperties(rawProperties);
+		const document = new Model(properties);
 		await document.save();
 		return this._transformToObject(document);
 	}
@@ -59,9 +60,10 @@ class CategoriesDao {
 		return this._transformToObject(document);
 	}
 
-	async update (id, name) {
+	async update (id, rawProperties) {
 		const Model = this.getModel();
-		const document = await Model.findByIdAndUpdate(id, { name }, this._getUpdateOptions()).orFail();
+		const properties = this._filterProperties(rawProperties);
+		const document = await Model.findByIdAndUpdate(id, properties, this._getUpdateOptions()).orFail();
 		return this._transformToObject(document);
 	}
 
@@ -80,6 +82,16 @@ class CategoriesDao {
 		this._schema = new this._mongooseModule.Schema(this._getSchemaDescriptor());
 	}
 
+	_createPropertyKeyList () {
+		this._propertyKeyList = Object.keys(this._getSchemaDescriptor());
+	}
+
+	_filterProperties (properties) {
+		const entries = Object.entries(properties)
+			.filter(([property, value]) => this._hasProperty(property));
+		return Object.fromEntries(entries);
+	}
+
 	_getSchemaDescriptor () {
 		return {
 			name: { type: String, required: true, unique: true },
@@ -92,10 +104,18 @@ class CategoriesDao {
 		};
 	}
 
+	_hasProperty (property) {
+		if (!this._propertyKeyList) {
+			this._createPropertyKeyList();
+		}
+		return this._propertyKeyList.includes(property);
+	}
+
 	_transformToObject (document) {
-		const { _id, name } = document;
+		const { _id, ...properties } = document;
 		const id = _id.toString();
-		return { id, name };
+		const rawProperties = this._filterProperties(properties);
+		return { id, ...rawProperties };
 	}
 
 	_transformToObjectList (documentList) {

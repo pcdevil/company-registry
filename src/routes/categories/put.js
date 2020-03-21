@@ -29,7 +29,7 @@ class CategoriesPutRoute extends AbstractRoute {
 		return async (request, reply) => {
 			try {
 				const { name } = request.body;
-				const document = await this._categoriesDao.create(name);
+				const document = await this._categoriesDao.create({ name });
 				return this._successResponse([document]);
 			} catch (e) {
 				this._throwError(e);

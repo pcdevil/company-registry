@@ -13,6 +13,7 @@ describe('CategoriesDao', () => {
 	const name1Updated = 'Test 1 2 3!';
 	const name2 = 'Test 4 5 6';
 	let Model;
+	let modelStub;
 	let mongooseModule;
 	let document1;
 	let document1Updated;
@@ -46,21 +47,14 @@ describe('CategoriesDao', () => {
 		Model.findByIdAndDelete = sinon.stub().returns(findByIdAndDeleteReturn);
 		Model.findByIdAndUpdate = sinon.stub().returns(findByIdAndUpdateReturn);
 		schema = { obj: { name: { type: String, required: true, unique: true } } };
+		modelStub = sinon.stub();
+		modelStub.withArgs('Categories').throws(new Error('MissingSchemaError'));
+		modelStub.withArgs('Categories', schema).returns(Model);
 		mongooseModule = {
 			Schema: sinon.stub().returns(schema),
-			model: sinon.stub().returns(Model),
+			model: modelStub,
 		};
 		subject = new CategoriesDao(mongooseModule);
-	});
-
-	afterEach(() => {
-		CategoriesDao.clearInstance();
-	});
-
-	it('should act as a singleton to avoid mongoose errors when trying to overwrite the model', () => {
-		const secondSubject = new CategoriesDao(mongooseModule);
-
-		expect(secondSubject).to.be.equal(subject);
 	});
 
 	describe('getModelName()', () => {
@@ -83,6 +77,19 @@ describe('CategoriesDao', () => {
 			const actual = subject.getModel();
 
 			expect(mongooseModule.model).to.not.have.been.called;
+			expect(actual).to.be.equal(Model);
+		});
+
+		it('should get the model from the module and return it if another instance already defined that', () => {
+			subject.getModel();
+			mongooseModule.model.resetHistory();
+			const newSubject = new CategoriesDao(mongooseModule);
+
+			const actual = newSubject.getModel();
+
+			expect(mongooseModule.model).to.have.been.calledTwice;
+			expect(mongooseModule.model.firstCall.args).to.be.eql(['Categories']);
+			expect(mongooseModule.model.secondCall.args).to.be.eql(['Categories', schema]);
 			expect(actual).to.be.equal(Model);
 		});
 	});

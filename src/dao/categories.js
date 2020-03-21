@@ -2,24 +2,13 @@
 
 const mongoose = require('mongoose');
 
-let instance;
-
 class CategoriesDao {
 	constructor (mongooseModule) {
-		if (instance) {
-			return instance;
-		}
-		instance = this;
-
 		this._mongooseModule = mongooseModule;
 	}
 
 	static createDefault () {
 		return new this(mongoose);
-	}
-
-	static clearInstance () {
-		instance = null;
 	}
 
 	static getModelName () {
@@ -74,8 +63,12 @@ class CategoriesDao {
 	}
 
 	_createModel () {
-		const schema = this.getSchema();
-		this._model = this._mongooseModule.model(this.constructor.getModelName(), schema);
+		try {
+			this._model = this._mongooseModule.model(this.constructor.getModelName());
+		} catch (e) {
+			const schema = this.getSchema();
+			this._model = this._mongooseModule.model(this.constructor.getModelName(), schema);
+		}
 	}
 
 	_createSchema () {

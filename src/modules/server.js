@@ -9,6 +9,13 @@ const {
 	CategoriesIdDeleteRoute,
 	CategoriesIdGetRoute,
 	CategoriesIdPatchRoute,
+	CompaniesGetRoute,
+	CompaniesPutRoute,
+	CompaniesIdCategoriesDeleteRoute,
+	CompaniesIdCategoriesPutRoute,
+	CompaniesIdDeleteRoute,
+	CompaniesIdGetRoute,
+	CompaniesIdPatchRoute,
 	RootGetRoute,
 } = require('../routes');
 
@@ -25,12 +32,19 @@ class Server {
 		const config = Config.createDefault();
 		const database = Database.createDefault();
 		const routes = [
-			RootGetRoute.createDefault(),
-			CategoriesIdDeleteRoute.createDefault(),
 			CategoriesGetRoute.createDefault(),
 			CategoriesPutRoute.createDefault(),
+			CategoriesIdDeleteRoute.createDefault(),
 			CategoriesIdGetRoute.createDefault(),
 			CategoriesIdPatchRoute.createDefault(),
+			CompaniesGetRoute.createDefault(),
+			CompaniesPutRoute.createDefault(),
+			CompaniesIdCategoriesDeleteRoute.createDefault(),
+			CompaniesIdCategoriesPutRoute.createDefault(),
+			CompaniesIdDeleteRoute.createDefault(),
+			CompaniesIdGetRoute.createDefault(),
+			CompaniesIdPatchRoute.createDefault(),
+			RootGetRoute.createDefault(),
 		];
 		return new this(process, fastify, config, database, routes);
 	}

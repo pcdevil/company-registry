@@ -18,6 +18,7 @@ function createCompanyObjectStub (companyId, extraProperties = {}) {
 		name: 'Test Company',
 		logoUrl: 'https://placekitten.com/244/244',
 		email: 'test@company.co.uk',
+		categories: [],
 		...extraProperties,
 	});
 }

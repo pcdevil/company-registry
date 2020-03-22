@@ -4,37 +4,26 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { AbstractDao } = require('../../src/dao/abstract');
 const { CompaniesDao } = require('../../src/dao');
-const { AsyncFunction } = require('../async-function');
+const {
+	AsyncFunction,
+	createQueryChainStub,
+	createCategoryObjectStub,
+	createCategoryDocumentStub,
+	createCompanyObjectStub,
+	createCompanyDocumentStub,
+} = require('../_helpers');
 
 describe('CompaniesDao', () => {
-	function createQueryChain (returnValue, chainMembers = ['orFail', 'populate']) {
-		const query = sinon.stub();
-		query.returns(query);
-		let memberToReturn = query;
-
-		for (const member of chainMembers) {
-			query[member] = sinon.stub().returns(query);
-			memberToReturn = query[member];
-		}
-		memberToReturn.returns(returnValue);
-
-		return query;
-	}
-
-	function createObjectId (id) {
-		return { toString: () => id };
-	}
-
 	const companyId = '5e767a0d70835715160a346c';
 	const categoryId = '51c35e5ced18cb901d000001';
 	let Model;
-	let categoryObject;
+	let category;
 	let categoryDocument;
-	let companyObject;
+	let company;
 	let companyDocument;
 	let modelStub;
 	let mongooseModule;
-	let updatedCompanyObject;
+	let updatedCompany;
 	let updatedCompanyDocument;
 	let objectId;
 	let schema;
@@ -42,48 +31,17 @@ describe('CompaniesDao', () => {
 
 	beforeEach(() => {
 		objectId = { name: 'ObjectId' };
-		categoryObject = {
-			_id: createObjectId(categoryId),
-			name: 'Test Category',
-		};
-		categoryDocument = {
-			_id: createObjectId(categoryId),
-			name: 'Test Category',
-			save: sinon.stub(),
-			toObject: sinon.stub().returns(categoryObject),
-		};
-		companyObject = {
-			_id: createObjectId(companyId),
-			name: 'Test Company',
-			logoUrl: 'https://placekitten.com/244/244',
-			email: 'test@company.co.uk',
-			categories: [],
-		};
-		companyDocument = {
-			_id: createObjectId(companyId),
-			name: 'Test Company',
-			logoUrl: 'https://placekitten.com/244/244',
-			email: 'test@company.co.uk',
-			categories: [],
-			save: sinon.stub(),
-			toObject: sinon.stub().returns(companyObject),
-		};
-		updatedCompanyObject = {
-			_id: createObjectId(companyId),
-			name: 'Test Company',
-			logoUrl: 'https://placekitten.com/244/244',
-			email: 'test@company.co.uk',
-			categories: [categoryObject],
-		};
-		updatedCompanyDocument = {
-			_id: createObjectId(companyId),
-			name: 'Test Company',
-			logoUrl: 'https://placekitten.com/244/244',
-			email: 'test@company.co.uk',
-			categories: [categoryDocument],
-			save: sinon.stub(),
-			toObject: sinon.stub().returns(updatedCompanyObject),
-		};
+		category = createCategoryObjectStub(categoryId);
+		categoryDocument = createCategoryDocumentStub(categoryId, category);
+		company = createCompanyObjectStub(companyId, { categories: []});
+		companyDocument = createCompanyDocumentStub(companyId, company, { categories: []});
+		updatedCompany = createCompanyObjectStub(companyId, { categories: [category]});
+		updatedCompanyDocument = createCompanyDocumentStub(
+			companyId,
+			updatedCompany,
+			{ categories: [categoryDocument]},
+		);
+
 		schema = { obj: {
 			name: { type: String, required: true, unique: true },
 			logoUrl: { type: String, required: true },
@@ -91,7 +49,7 @@ describe('CompaniesDao', () => {
 			categories: [{ ref: 'Categories', type: objectId }],
 		} };
 		Model = sinon.stub().returns(companyDocument);
-		Model.findByIdAndUpdate = createQueryChain(updatedCompanyDocument);
+		Model.findByIdAndUpdate = createQueryChainStub(updatedCompanyDocument);
 		modelStub = sinon.stub().returns(Model);
 		mongooseModule = {
 			Schema: sinon.stub().returns(schema),
@@ -149,7 +107,7 @@ describe('CompaniesDao', () => {
 		it('should return the updated document', async () => {
 			const actual = await subject.addCategory(companyId, categoryId);
 
-			expect(actual).to.be.eql(updatedCompanyObject);
+			expect(actual).to.be.eql(updatedCompany);
 		});
 	});
 
@@ -171,11 +129,11 @@ describe('CompaniesDao', () => {
 		});
 
 		it('should return the updated document', async () => {
-			Model.findByIdAndUpdate = createQueryChain(companyDocument);
+			Model.findByIdAndUpdate = createQueryChainStub(companyDocument);
 
 			const actual = await subject.deleteCategory(companyId, categoryId);
 
-			expect(actual).to.be.eql(companyObject);
+			expect(actual).to.be.eql(company);
 		});
 	});
 });

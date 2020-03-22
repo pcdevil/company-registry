@@ -4,26 +4,28 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { AbstractRoute } = require('../../../../src/routes/abstract');
 const { CategoriesIdGetRoute } = require('../../../../src/routes');
-const { AsyncFunction } = require('../../../async-function');
+const {
+	AsyncFunction,
+	createCategoryObjectStub,
+} = require('../../../_helpers');
 
 describe('CategoriesIdGetRoute', () => {
-	const id1 = '5e735ae25d27a6d4b2c6cd51id';
-	const name1 = 'Test 1 2 3';
+	const id = '5e735ae25d27a6d4b2c6cd51id';
 	let categoriesDao;
-	let documentObject1;
-	let documentObjectList;
+	let category;
+	let categoryList;
 	let request;
 	let reply;
 	let subject;
 
 	beforeEach(() => {
-		documentObject1 = { _id: id1, name: name1 };
-		documentObjectList = [documentObject1];
+		category = createCategoryObjectStub(id);
+		categoryList = [category];
 
 		categoriesDao = {
-			read: sinon.stub().resolves(documentObject1),
+			read: sinon.stub().resolves(category),
 		};
-		request = { params: { id: id1 } };
+		request = { params: { id } };
 		reply = { code: sinon.stub() };
 		subject = new CategoriesIdGetRoute(categoriesDao);
 	});
@@ -64,9 +66,9 @@ describe('CategoriesIdGetRoute', () => {
 
 				const actual = await handler(request, reply);
 
-				expect(categoriesDao.read).to.have.been.calledWith(id1);
+				expect(categoriesDao.read).to.have.been.calledWith(id);
 				expect(actual).to.be.an('object');
-				expect(actual.data).to.be.eql(documentObjectList);
+				expect(actual.data).to.be.eql(categoryList);
 			});
 
 			it('should transform and throw the not found error from the dao', async () => {

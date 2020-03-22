@@ -4,28 +4,29 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { AbstractRoute } = require('../../../src/routes/abstract');
 const { CategoriesGetRoute } = require('../../../src/routes');
-const { AsyncFunction } = require('../../async-function');
+const {
+	AsyncFunction,
+	createCategoryObjectStub,
+} = require('../../_helpers');
 
 describe('CategoriesGetRoute', () => {
 	const id1 = '5e735ae25d27a6d4b2c6cd51id';
 	const id2 = '5e7361b98e8f111a14b36377c3';
-	const name1 = 'Test 1 2 3';
-	const name2 = 'Test 4 5 6';
 	let categoriesDao;
-	let documentObject1;
-	let documentObject2;
-	let documentObjectList;
+	let category1;
+	let category2;
+	let categoryList;
 	let request;
 	let reply;
 	let subject;
 
 	beforeEach(() => {
-		documentObject1 = { _id: id1, name: name1 };
-		documentObject2 = { _id: id2, name: name2 };
-		documentObjectList = [documentObject1, documentObject2];
+		category1 = createCategoryObjectStub(id1, { name: 'Test Company 1' });
+		category2 = createCategoryObjectStub(id2, { name: 'Test Company 2' });
+		categoryList = [category1, category2];
 
 		categoriesDao = {
-			list: sinon.stub().resolves(documentObjectList),
+			list: sinon.stub().resolves(categoryList),
 		};
 		request = {};
 		reply = { code: sinon.stub() };
@@ -69,7 +70,7 @@ describe('CategoriesGetRoute', () => {
 
 				expect(categoriesDao.list).to.have.been.called;
 				expect(actual).to.be.an('object');
-				expect(actual.data).to.be.eql(documentObjectList);
+				expect(actual.data).to.be.eql(categoryList);
 			});
 
 			it('should catch dao errors and throw a generic one instead', async () => {

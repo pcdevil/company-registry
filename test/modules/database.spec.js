@@ -3,8 +3,10 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { Database } = require('../../src/modules');
-const { AsyncFunction } = require('../async-function');
-const { createAsyncStubCallFake } = require('../create-async-stub-call-fake');
+const {
+	AsyncFunction,
+	createAsyncStubCallFake,
+} = require('../_helpers');
 
 describe('Database', () => {
 	let config;

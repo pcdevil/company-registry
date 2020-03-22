@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const { AbstractRoute } = require('../../../src/routes/abstract');
 const { RootGetRoute } = require('../../../src/routes');
-const { AsyncFunction } = require('../../async-function');
+const { AsyncFunction } = require('../../_helpers');
 
 describe('RootGetRoute', () => {
 	let subject;

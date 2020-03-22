@@ -12,14 +12,14 @@ describe('Config', () => {
 		SERVER_PORT: 1234,
 		SERVER_LOGGER: false,
 	};
-	let emptyDotenv;
-	let errorDotenv;
-	let populatedDotenv;
+	let dotenvModule;
+	let processModule;
 
 	beforeEach(() => {
-		emptyDotenv = { config: sinon.stub().returns({ parsed: {} }) };
-		errorDotenv = { config: sinon.stub().returns({ error: new Error() }) };
-		populatedDotenv = { config: sinon.stub().returns({ parsed: envStub }) };
+		processModule = { env: {} };
+		dotenvModule = { config: sinon.stub().callsFake(() => {
+			processModule.env = envStub;
+		}) };
 	});
 
 	const configProperties = {
@@ -33,23 +33,24 @@ describe('Config', () => {
 		],
 	};
 
+	it('should call the config method of the dotenv module upon creating new instance', () => {
+		new Config(dotenvModule, processModule);
+
+		expect(dotenvModule.config).to.have.been.called;
+	});
+
 	for (const [category, properties] of Object.entries(configProperties)) {
 		describe(`.${category}`, () => {
-			it('should handle errors from the dotenv module', () => {
-				const subject = new Config(errorDotenv);
-
-				expect(subject[category]).to.be.an('object');
-			});
-
 			for (const { property, env, defaultValue } of properties) {
 				it(`should have a "${property}" property populated by the "${env}" env variable`, () => {
-					const subject = new Config(populatedDotenv);
+					const subject = new Config(dotenvModule, processModule);
 
 					expect(subject[category][property]).to.be.eql(envStub[env]);
 				});
 
 				it(`should have a "${property}" property with default value if the "${env}" env variable is unset`, () => {
-					const subject = new Config(emptyDotenv);
+					dotenvModule.config.callsFake(() => {});
+					const subject = new Config(dotenvModule, processModule);
 
 					expect(subject[category][property]).to.be.eql(defaultValue);
 				});

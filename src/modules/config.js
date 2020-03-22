@@ -4,30 +4,33 @@ const dotenv = require('dotenv');
 const { nullishOperator } = require('../lib');
 
 class Config {
-	constructor (dotenvModule) {
+	constructor (dotenvModule, processModule) {
 		this._dotenvModule = dotenvModule;
+		this._processModule = processModule;
 
-		const config = this._dotenvModule.config();
-
-		this._parsedConfig = config.error ? {} : config.parsed;
+		this._dotenvModule.config();
 	}
 
 	static createDefault () {
-		return new this(dotenv);
+		return new this(dotenv, process);
 	}
 
 	get mongodb () {
 		return {
-			uri: nullishOperator(this._parsedConfig.MONGODB_URI, 'mongodb://mongodb:27017/company-registry'),
+			uri: this._getEnvVariable('MONGODB_URI', 'mongodb://mongodb:27017/company-registry'),
 		};
 	}
 
 	get server () {
 		return {
-			host: nullishOperator(this._parsedConfig.SERVER_HOST, 'localhost'),
-			port: nullishOperator(this._parsedConfig.SERVER_PORT, 8080),
-			logger: nullishOperator(this._parsedConfig.SERVER_LOGGER, true),
+			host: this._getEnvVariable('SERVER_HOST', 'localhost'),
+			port: this._getEnvVariable('SERVER_PORT', 8080),
+			logger: this._getEnvVariable('SERVER_LOGGER', true),
 		};
+	}
+
+	_getEnvVariable (variableName, defaultValue) {
+		return nullishOperator(this._processModule.env[variableName], defaultValue);
 	}
 }
 

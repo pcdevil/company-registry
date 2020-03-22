@@ -8,9 +8,8 @@ describe('Config', () => {
 	const envStub = {
 		MONGODB_URI: 'mongodb://mongodb-test:4567/test',
 
-		SERVER_HOST: 'company-registry',
-		SERVER_PORT: 1234,
-		SERVER_LOGGER: false,
+		PORT: 1234,
+		LOGGER: false,
 	};
 	let dotenvModule;
 	let processModule;
@@ -27,9 +26,8 @@ describe('Config', () => {
 			{ property: 'uri', env: 'MONGODB_URI', defaultValue: 'mongodb://mongodb:27017/company-registry' },
 		],
 		server: [
-			{ property: 'host', env: 'SERVER_HOST', defaultValue: 'localhost' },
-			{ property: 'port', env: 'SERVER_PORT', defaultValue: 8080 },
-			{ property: 'logger', env: 'SERVER_LOGGER', defaultValue: true },
+			{ property: 'port', env: 'PORT', defaultValue: 8080 },
+			{ property: 'logger', env: 'LOGGER', defaultValue: true },
 		],
 	};
 

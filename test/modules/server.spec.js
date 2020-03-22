@@ -28,7 +28,7 @@ describe('Server', () => {
 		};
 		processModule = { exit: sinon.stub() };
 		fastifyModule = sinon.stub().returns(fastifyInstance);
-		config = { server: { host: 'company-registry', port: 1234, logger: true } };
+		config = { server: { port: 1234, logger: true } };
 		database = { connect: sinon.stub(), disconnect: sinon.stub(), init: sinon.stub() };
 		routeOptions = { method: 'PUT', url: '/test-route', handler: async () => ({ test: true }) };
 		route = { getOptions: sinon.stub().returns(routeOptions) };
@@ -99,7 +99,7 @@ describe('Server', () => {
 		it('should listen for the fastify instance with the given port', async () => {
 			await subject.start();
 
-			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port, config.server.host);
+			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port);
 		});
 
 		it('should wait for the fastify server to be up', async () => {

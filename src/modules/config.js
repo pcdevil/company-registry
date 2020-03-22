@@ -23,9 +23,8 @@ class Config {
 
 	get server () {
 		return {
-			host: this._getEnvVariable('SERVER_HOST', 'localhost'),
-			port: this._getEnvVariable('SERVER_PORT', 8080),
-			logger: this._getEnvVariable('SERVER_LOGGER', true),
+			port: this._getEnvVariable('PORT', 8080),
+			logger: this._getEnvVariable('LOGGER', true),
 		};
 	}
 

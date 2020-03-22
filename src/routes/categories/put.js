@@ -2,21 +2,14 @@
 
 const { AbstractRoute } = require('../abstract');
 const { CategoriesDao } = require('../../dao');
+const { createCategoriesRouteSchema } = require('../../lib');
 
 class CategoriesPutRoute extends AbstractRoute {
 	constructor (categoriesDao) {
 		super();
 		this._method = 'PUT';
 		this._url = '/categories';
-		this._schema = {
-			body: {
-				type: 'object',
-				properties: {
-					name: { type: 'string' },
-				},
-				required: ['name'],
-			},
-		};
+		this._schema = createCategoriesRouteSchema();
 		this._categoriesDao = categoriesDao;
 	}
 

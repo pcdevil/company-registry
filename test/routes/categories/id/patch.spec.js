@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const { AbstractRoute } = require('../../../../src/routes/abstract');
 const { CategoriesIdPatchRoute } = require('../../../../src/routes');
+const { createCategoriesRouteSchema } = require('../../../../src/lib');
 const {
 	AsyncFunction,
 	createCategoryObjectStub,
@@ -40,6 +41,7 @@ describe('CategoriesIdPatchRoute', () => {
 
 			expect(actual.method).to.be.eql('PATCH');
 			expect(actual.url).to.be.eql('/categories/:id');
+			expect(actual.schema).to.be.eql(createCategoriesRouteSchema());
 			expect(actual.handler).to.be.a('function');
 		});
 

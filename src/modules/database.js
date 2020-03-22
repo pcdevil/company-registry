@@ -2,16 +2,31 @@
 
 const mongoose = require('mongoose');
 const { Config } = require('./config');
+const {
+	CategoriesDao,
+	CompaniesDao,
+} = require('../dao');
 
 class Database {
-	constructor (mongooseModule, config) {
+	constructor (mongooseModule, config, daos) {
 		this._mongooseModule = mongooseModule;
 		this._config = config;
+		this._daos = daos;
 	}
 
 	static createDefault () {
 		const config = Config.createDefault();
-		return new this(mongoose, config);
+		const daos = [
+			CategoriesDao.createDefault(),
+			CompaniesDao.createDefault(),
+		];
+		return new this(mongoose, config, daos);
+	}
+
+	init () {
+		for (const dao of this._daos) {
+			dao.getModel();
+		}
 	}
 
 	async connect () {

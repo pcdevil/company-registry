@@ -55,6 +55,8 @@ class Server {
 		};
 		this._fastifyInstance = this._fastifyModule(fastifyOptions);
 
+		this._database.init();
+
 		this._initRoutes();
 	}
 

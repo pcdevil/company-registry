@@ -29,7 +29,7 @@ describe('Server', () => {
 		processModule = { exit: sinon.stub() };
 		fastifyModule = sinon.stub().returns(fastifyInstance);
 		config = { server: { host: 'company-registry', port: 1234, logger: true } };
-		database = { connect: sinon.stub(), disconnect: sinon.stub() };
+		database = { connect: sinon.stub(), disconnect: sinon.stub(), init: sinon.stub() };
 		routeOptions = { method: 'PUT', url: '/test-route', handler: async () => ({ test: true }) };
 		route = { getOptions: sinon.stub().returns(routeOptions) };
 		routes = [route];
@@ -49,6 +49,12 @@ describe('Server', () => {
 			expect(route.getOptions).to.have.been.called;
 
 			expect(fastifyInstance.route).to.have.been.calledWith(routeOptions);
+		});
+
+		it('should initalise the database module', () => {
+			subject.init();
+
+			expect(database.init).to.have.been.called;
 		});
 	});
 

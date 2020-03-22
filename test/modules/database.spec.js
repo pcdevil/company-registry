@@ -10,6 +10,8 @@ const {
 
 describe('Database', () => {
 	let config;
+	let dao;
+	let daos;
 	let mongooseModule;
 	let subject;
 
@@ -19,7 +21,17 @@ describe('Database', () => {
 			connect: sinon.stub(),
 			disconnect: sinon.stub(),
 		};
-		subject = new Database(mongooseModule, config);
+		dao = { getModel: sinon.stub() };
+		daos = [dao];
+		subject = new Database(mongooseModule, config, daos);
+	});
+
+	describe('init()', () => {
+		it('should call getModel on every given dao to make sure the schema is registered', () => {
+			subject.init();
+
+			expect(dao.getModel).to.have.been.called;
+		});
 	});
 
 	describe('connect()', () => {

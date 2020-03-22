@@ -14,6 +14,16 @@ class CompaniesDao extends AbstractDao {
 		].join(' ');
 	}
 
+	async addCategory (companyId, categoryId) {
+		const properties = { '$push': { 'categories': categoryId } };
+		return this.update(companyId, properties);
+	}
+
+	async deleteCategory (companyId, categoryId) {
+		const properties = { '$pull': { 'categories': categoryId } };
+		return this.update(companyId, properties);
+	}
+
 	_getSchemaDescriptor () {
 		return {
 			name: { type: String, required: true, unique: true },

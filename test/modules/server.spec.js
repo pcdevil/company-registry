@@ -99,7 +99,7 @@ describe('Server', () => {
 		it('should listen for the fastify instance with the given port', async () => {
 			await subject.start();
 
-			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port);
+			expect(fastifyInstance.listen).to.have.been.calledWith(config.server.port, '0.0.0.0');
 		});
 
 		it('should wait for the fastify server to be up', async () => {

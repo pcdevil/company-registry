@@ -63,7 +63,7 @@ class Server {
 	async start () {
 		try {
 			await this._database.connect();
-			await this._fastifyInstance.listen(this._config.server.port);
+			await this._fastifyInstance.listen(this._config.server.port, '0.0.0.0');
 		} catch (err) {
 			await this._stop(1, err);
 		}

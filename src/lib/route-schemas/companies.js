@@ -5,7 +5,7 @@ function createCompaniesRouteSchema () {
 		body: {
 			type: 'object',
 			properties: {
-				categories: { types: 'array', items: { type: 'string' } },
+				categories: { type: 'array', items: { type: 'string' } },
 				email: { type: 'string' },
 				logoUrl: { type: 'string' },
 				name: { type: 'string' },

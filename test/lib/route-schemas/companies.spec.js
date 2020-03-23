@@ -10,7 +10,7 @@ describe('createCompaniesRouteSchema()', () => {
 		expect(subject.body).to.be.an('object');
 		expect(subject.body.type).to.be.eql('object');
 		expect(subject.body.properties).to.be.eql({
-			categories: { types: 'array', items: { type: 'string' } },
+			categories: { type: 'array', items: { type: 'string' } },
 			email: { type: 'string' },
 			logoUrl: { type: 'string' },
 			name: { type: 'string' },

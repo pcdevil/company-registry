@@ -4,18 +4,18 @@ const fastify = require('fastify');
 const { Config } = require('./config');
 const { Database } = require('./database');
 const {
-	CategoriesGetRoute,
-	CategoriesPutRoute,
-	CategoriesIdDeleteRoute,
-	CategoriesIdGetRoute,
-	CategoriesIdPatchRoute,
-	CompaniesGetRoute,
-	CompaniesPutRoute,
-	CompaniesIdCategoriesDeleteRoute,
-	CompaniesIdCategoriesPutRoute,
-	CompaniesIdDeleteRoute,
-	CompaniesIdGetRoute,
-	CompaniesIdPatchRoute,
+	ApiCategoriesGetRoute,
+	ApiCategoriesPutRoute,
+	ApiCategoriesIdDeleteRoute,
+	ApiCategoriesIdGetRoute,
+	ApiCategoriesIdPatchRoute,
+	ApiCompaniesGetRoute,
+	ApiCompaniesPutRoute,
+	ApiCompaniesIdCategoriesDeleteRoute,
+	ApiCompaniesIdCategoriesPutRoute,
+	ApiCompaniesIdDeleteRoute,
+	ApiCompaniesIdGetRoute,
+	ApiCompaniesIdPatchRoute,
 	RootGetRoute,
 } = require('../routes');
 
@@ -32,18 +32,18 @@ class Server {
 		const config = Config.createDefault();
 		const database = Database.createDefault();
 		const routes = [
-			CategoriesGetRoute.createDefault(),
-			CategoriesPutRoute.createDefault(),
-			CategoriesIdDeleteRoute.createDefault(),
-			CategoriesIdGetRoute.createDefault(),
-			CategoriesIdPatchRoute.createDefault(),
-			CompaniesGetRoute.createDefault(),
-			CompaniesPutRoute.createDefault(),
-			CompaniesIdCategoriesDeleteRoute.createDefault(),
-			CompaniesIdCategoriesPutRoute.createDefault(),
-			CompaniesIdDeleteRoute.createDefault(),
-			CompaniesIdGetRoute.createDefault(),
-			CompaniesIdPatchRoute.createDefault(),
+			ApiCategoriesGetRoute.createDefault(),
+			ApiCategoriesPutRoute.createDefault(),
+			ApiCategoriesIdDeleteRoute.createDefault(),
+			ApiCategoriesIdGetRoute.createDefault(),
+			ApiCategoriesIdPatchRoute.createDefault(),
+			ApiCompaniesGetRoute.createDefault(),
+			ApiCompaniesPutRoute.createDefault(),
+			ApiCompaniesIdCategoriesDeleteRoute.createDefault(),
+			ApiCompaniesIdCategoriesPutRoute.createDefault(),
+			ApiCompaniesIdDeleteRoute.createDefault(),
+			ApiCompaniesIdGetRoute.createDefault(),
+			ApiCompaniesIdPatchRoute.createDefault(),
 			RootGetRoute.createDefault(),
 		];
 		return new this(process, fastify, config, database, routes);

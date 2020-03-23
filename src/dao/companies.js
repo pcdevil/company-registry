@@ -15,7 +15,7 @@ class CompaniesDao extends AbstractDao {
 	}
 
 	async addCategory (companyId, categoryId) {
-		const properties = { '$push': { 'categories': categoryId } };
+		const properties = { '$addToSet': { 'categories': categoryId } };
 		return this.update(companyId, properties);
 	}
 

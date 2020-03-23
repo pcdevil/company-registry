@@ -93,7 +93,7 @@ describe('CompaniesDao', () => {
 		});
 
 		it('should update the model properly', async () => {
-			const properties = { '$push': { 'categories': categoryId } };
+			const properties = { '$addToSet': { 'categories': categoryId } };
 
 			await subject.addCategory(companyId, categoryId);
 

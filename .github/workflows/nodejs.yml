@@ -34,6 +34,7 @@ jobs:
         CI: true
 
     - name: Deploy to Heroku
+      if: ${{ github.event_name == 'push' }}
       uses: AkhileshNS/heroku-deploy@v3.0.0
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}

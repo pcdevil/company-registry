@@ -18,20 +18,24 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [13.x]
+        node-version:
+          - 13.x
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Checkout project
+      uses: actions/checkout@v2
+    - name: Setup Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - run: npm run lint
-    - run: npm test
+    - name: Install npm dependencies
+      run: npm ci
+    - name: Perform style check
+      run: npm run lint
+    - name: Perform test check
+      run: npm test
       env:
         CI: true
-
     - name: Deploy to Heroku
       if: ${{ github.event_name == 'push' }}
       uses: AkhileshNS/heroku-deploy@v3.0.0

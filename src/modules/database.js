@@ -39,8 +39,6 @@ class Database {
 
 	_getMongooseOptions () {
 		return {
-			useCreateIndex: true,
-			useFindAndModify: false,
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			serverSelectionTimeoutMS: 5000,

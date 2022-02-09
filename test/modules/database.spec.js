@@ -43,8 +43,6 @@ describe('Database', () => {
 			subject.connect();
 
 			expect(mongooseModule.connect).to.have.been.calledWith(config.mongodb.uri, {
-				useCreateIndex: true,
-				useFindAndModify: false,
 				useNewUrlParser: true,
 				useUnifiedTopology: true,
 				serverSelectionTimeoutMS: 5000,

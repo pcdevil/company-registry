@@ -1,5 +1,5 @@
 {
-  "name": "company-registry",
+  "name": "@pcdevil/company-registry",
   "version": "0.0.0",
   "description": "A simple showcase application for a company registry API.",
   "main": "src/index.js",

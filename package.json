@@ -41,6 +41,6 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "fastify": "^3.27.1",
-    "mongoose": "^6.2.1"
+    "mongoose": "^6.4.6"
   }
 }

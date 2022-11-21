@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "dotenv": "^16.0.0",
-    "fastify": "^3.27.1",
+    "fastify": "^3.29.4",
     "mongoose": "^6.2.1"
   }
 }
